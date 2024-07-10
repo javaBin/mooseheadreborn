@@ -104,6 +104,41 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>3.14.4</version> <!-- update version as needed -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jdbc>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://localhost:5432/mooserblocal</url>
+                        <user>localdevuser</user>
+                        <password>localdevuser</password>
+                    </jdbc>
+                    <generator>
+                        <database>
+                            <!-- Modify this to include/exclude specific databases or tables -->
+                            <includes>.*</includes>
+                            <excludes>pg_catalog.*</excludes>
+                        </database>
+                        <target>
+                            <!-- Specify the target package and directory -->
+                            <packageName>no.java.mooseheadreborn.jooq</packageName>
+                            <directory>target/generated-sources/jooq</directory>
+                        </target>
+                        <generate>
+                            <pojos>true</pojos> <!-- Generate POJOs -->
+                        </generate>
+                    </generator>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
