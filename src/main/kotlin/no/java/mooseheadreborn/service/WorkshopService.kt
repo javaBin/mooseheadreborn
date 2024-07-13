@@ -34,7 +34,7 @@ class WorkshopService(
         )
     }
 
-    fun addWorkshop(addWorkshopDto: AddWorkshopDto): Either<String,String> {
+    fun addWorkshop(addWorkshopDto: AddWorkshopDto): Either<ResultWithId,String> {
         val id:String = addWorkshopDto.id?:UUID.randomUUID().toString()
         val workshopType:WorkshopType = WorkshopType.fromString(addWorkshopDto.workshopType)?:
             return Either.Right("Unknown workshop type ${addWorkshopDto.workshopType}")
@@ -61,6 +61,6 @@ class WorkshopService(
             changesLocked
         )
         workshopRepository.addWorkshop(workshopRecord)
-        return Either.Left(id)
+        return Either.Left(ResultWithId(id))
     }
 }

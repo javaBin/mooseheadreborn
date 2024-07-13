@@ -8,3 +8,20 @@ CREATE TABLE workshop(
     changes_locked TIMESTAMPTZ NULL
 );
 
+CREATE TABLE particiant(
+    id VARCHAR NOT NULL PRIMARY KEY,
+    email VARCHAR NOT NULL,
+    name VARCHAR NOT NULL,
+    access_key VARCHAR NOT NULL,
+    activated_at TIMESTAMPTZ NULL
+);
+
+CREATE TABLE registration(
+    id VARCHAR NOT NULL PRIMARY KEY,
+    workshop VARCHAR NOT NULL,
+    participant VARCHAR NOT NULL,
+    participant_count INT NOT NULL,
+    registered_at TIMESTAMPTZ NOT NULL,
+    cancelled_at TIMESTAMPTZ NULL
+);
+

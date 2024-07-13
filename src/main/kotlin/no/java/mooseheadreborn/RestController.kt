@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class RestController(
-    private val workshopService: WorkshopService
+    private val workshopService: WorkshopService,
+    private val participantService: ParticipantService,
 ) {
     @GetMapping("/config")
     fun hello(): ConfigDto {
@@ -21,11 +22,31 @@ class RestController(
 
 
     @PostMapping("/api/addWorkshop")
-    fun addWorkshop(@RequestBody addWorkshopDto: AddWorkshopDto):ResponseEntity<String> {
+    fun addWorkshop(@RequestBody addWorkshopDto: AddWorkshopDto):ResponseEntity<Any> {
         return workshopService.addWorkshop(addWorkshopDto).fold(
-            left = { id -> ResponseEntity.ok(id) },
+            left = { resultWithId -> ResponseEntity.ok(resultWithId) },
             right = { errormessage -> ResponseEntity(errormessage, HttpStatus.BAD_REQUEST)}
         )
     }
+
+    @PostMapping("/api/registerParticipant")
+    fun registerParticipant(@RequestBody registerParticipantDto: RegisterParticipantDto):ResponseEntity<Any> {
+        return participantService.registerParticipant(registerParticipantDto.name,registerParticipantDto.email).fold(
+            left = { noData -> ResponseEntity.ok(noData) },
+            right = { errormessage -> ResponseEntity(errormessage, HttpStatus.BAD_REQUEST)}
+        )
+    }
+
+    @PostMapping("/api/activateParticipant")
+    fun activateParticipant(@RequestBody activateParticipantDto: ActivateParticipantDto):ResponseEntity<Any> {
+        return participantService.activateParticipant(activateParticipantDto.accessKey).fold(
+            left = { noData -> ResponseEntity.ok(noData) },
+            right = { errormessage -> ResponseEntity(errormessage, HttpStatus.BAD_REQUEST)}
+        )
+
+    }
+
+
+
 
 }
