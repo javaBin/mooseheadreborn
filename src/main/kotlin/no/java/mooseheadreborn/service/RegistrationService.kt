@@ -2,6 +2,7 @@ package no.java.mooseheadreborn.service
 
 import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
+import no.java.mooseheadreborn.dto.enduser.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.*
 import no.java.mooseheadreborn.util.*
 import org.springframework.stereotype.Service
@@ -93,5 +94,32 @@ class RegistrationService(
         val registrationList = registrationRepository.registrationListForWorkshop(workshopRecord.id)
         val numRegistered = registrationList.filter { it.cancelledAt == null }.sumOf { it.participantCount }
         return if (numRegistered+numParticipants > workshopRecord.capacity) RegistrationStatus.WAITING else RegistrationStatus.REGISTERED
+    }
+
+    fun readParticipantDto(accessKey:String):Either<ParticipantDto,String> {
+        val particiant:ParticiantRecord = participantRepository.participantByAccessKey(accessKey)
+            ?:return Either.Right("Unknown access key")
+        val registrationList:List<RegistrationRecord> = registrationRepository.registationListByParticipant(particiant.id)
+
+        val participationList:List<UserParticipationDto> = registrationList
+            .filter { it.cancelledAt == null }
+            .sortedBy { it.registeredAt }
+            .map { rr ->
+                val workshopRecord = workshopRepository.workshopFromId(rr.workshop)
+                val workshopName:String = workshopRecord?.name?:"Unknown name"
+                val registrationStatus:RegistrationStatus = RegistrationStatus.valueOf(rr.status)
+                UserParticipationDto(
+                    workshopName = workshopName,
+                    participationStatus = registrationStatus.displayText,
+                    participantCount = if ((workshopRecord?.registerLimit?:1) > 1) rr.participantCount else null
+                )
+            }
+        return Either.Left(
+            ParticipantDto(
+                name = particiant.name,
+                email = particiant.email,
+                participationList = participationList
+            )
+        )
     }
 }

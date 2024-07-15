@@ -18,7 +18,8 @@ class RegistrationServiceTest {
         workshopRepository = workshopRepository,
         participantRepository = participantRepository,
         registrationRepository = registrationRepository,
-        timeService = MyTimeServiceImpl()
+        timeService = MyTimeServiceImpl(),
+        sendMailService = mockk(relaxed = true)
     )
 
     @Test

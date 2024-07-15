@@ -1,6 +1,7 @@
 package no.java.mooseheadreborn.service
 
 import no.java.mooseheadreborn.dto.*
+import no.java.mooseheadreborn.dto.enduser.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.*
 import no.java.mooseheadreborn.util.*
 import org.springframework.stereotype.Service
@@ -10,8 +11,10 @@ import java.util.UUID
 class ParticipantService(
     private val participantRepository: ParticipantRepository,
     private val sendMailService: SendMailService,
+    private val registrationRepository: RegistrationRepository,
+
 ) {
-    fun registerParticipant(name:String,email:String):Either<NoDataDto,String> {
+    fun registerParticipant(name:String, email:String):Either<NoDataDto,String> {
         if (participantRepository.participantByEmail(email) != null) {
             return Either.Right("Participant with email already exists")
         }
@@ -41,4 +44,6 @@ class ParticipantService(
       participantRepository.setActive(particiantRecord.id)
       return Either.Left(NoDataDto())
     }
+
+
 }

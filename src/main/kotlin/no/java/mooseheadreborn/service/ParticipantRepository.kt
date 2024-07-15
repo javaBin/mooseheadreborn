@@ -33,6 +33,7 @@ class ParticipantRepository(
             .fetchOne()
     }
 
+
     fun setActive(id:String) {
         dslContext.update(Tables.PARTICIANT)
             .set(Particiant.PARTICIANT.ACTIVATED_AT, OffsetDateTime.now())
