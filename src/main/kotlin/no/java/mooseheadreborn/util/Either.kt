@@ -9,4 +9,14 @@ sealed class Either<out L, out R> {
             is Left -> left(value)
             is Right -> right(value)
         }
+
+    fun leftOrNull():L? = when (this) {
+        is Left -> value
+        is Right -> null
+    }
+
+    fun rightOrNull():R? = when (this) {
+        is Left -> null
+        is Right -> value
+    }
 }

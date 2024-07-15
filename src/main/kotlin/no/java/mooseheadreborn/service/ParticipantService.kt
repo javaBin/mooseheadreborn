@@ -27,7 +27,8 @@ class ParticipantService(
 
         participantRepository.addParticipant(pr)
 
-        sendMailService.sendEmail(email,"Confirm email","Your key is $accessKey")
+        sendMailService.sendEmail(email,"Confirm email",
+            EmailTextGenerator.loadText(EmailTemplate.PARTICIPANT_CONFIRMATION, mapOf(EmailVariable.ACCESS_KEY to accessKey.toString())))
 
         return Either.Left(NoDataDto())
     }

@@ -18,6 +18,7 @@ CREATE TABLE particiant(
 
 CREATE TABLE registration(
     id VARCHAR NOT NULL PRIMARY KEY,
+    status VARCHAR NOT NULL,
     workshop VARCHAR NOT NULL,
     participant VARCHAR NOT NULL,
     participant_count INT NOT NULL,

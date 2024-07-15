@@ -17,6 +17,12 @@ class WorkshopRepository(
         dslContext.executeInsert(workshopRecord )
     }
 
+    fun workshopFromId(workshopId: String): WorkshopRecord? {
+        return dslContext.selectFrom(Tables.WORKSHOP)
+            .where(Tables.WORKSHOP.ID.eq(workshopId))
+            .fetchOne()
+    }
+
 
 
 }
