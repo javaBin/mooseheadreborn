@@ -21,6 +21,13 @@ class WorkshopService(
         return workshopDtos
     }
 
+    fun workshopById(workshopId:String): WorkshopDto? {
+        val workshopRecord = workshopRepository.workshopFromId(workshopId)?:return null
+
+        val now:Instant = timeService.currentTime()
+        return toDto(workshopRecord,now)
+    }
+
     private fun toDto(workshopRecord:WorkshopRecord,now:Instant):WorkshopDto {
         val openTime:Instant = workshopRecord.registrationOpen.toInstant()
         val status:WorkshopStatus = when {

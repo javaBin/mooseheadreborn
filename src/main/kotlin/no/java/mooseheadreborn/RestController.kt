@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.RestController
 
+@CrossOrigin(origins = arrayOf("http://localhost:3000"))
 @RestController
 class RestController(
     private val workshopService: WorkshopService,
@@ -21,6 +22,16 @@ class RestController(
 
     @GetMapping("/api/workshopList")
     fun allWorkshops() = workshopService.allWorkshops()
+
+    @GetMapping("/api/workshop/{workshopId}")
+    fun oneWorkshop(@PathVariable workshopId: String?): ResponseEntity<WorkshopDto> {
+        if (workshopId == null) {
+            throw BadRequestException("WorkshopId cannot be null")
+        }
+        val workshopDto = workshopService.workshopById(workshopId)
+            ?: throw BadRequestException("Unknown workshop $workshopId")
+        return ResponseEntity.ok(workshopDto)
+    }
 
 
     @PostMapping("/api/addWorkshop")
