@@ -1,11 +1,9 @@
 import { Container } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-interface WorkshopType {
-    id: string,
-    name: string
-}
+import ServerConfig from "../ServerConfig";
+import {WorkshopType} from "../ServerTypes";
+import WorkshopInfo from "../components/WorkshopInfo";
 
 function WorkshopRegistryPage() {
     const { workshopId} = useParams<{workshopId: string}>();
@@ -13,7 +11,7 @@ function WorkshopRegistryPage() {
     const [ errormessage, setErrormessage] = useState<String | null>(null);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/workshop/" + workshopId)//
+        fetch(ServerConfig.address + "/api/workshop/" + workshopId)//
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -33,7 +31,7 @@ function WorkshopRegistryPage() {
     return (<Container>
         {errormessage && <div>Error: {errormessage}</div>}
         {!(workshop || errormessage) && <div>Loading</div>}
-        {workshop && <h1>Workshop {workshop.name}</h1>}
+        {workshop && <WorkshopInfo workshop={workshop}/>}
     </Container>);
 }
 
