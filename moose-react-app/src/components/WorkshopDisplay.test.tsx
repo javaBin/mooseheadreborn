@@ -1,6 +1,6 @@
 import {render,screen} from '@testing-library/react';
 
-import WorkshopInfo from "./WorkshopInfo";
+import WorkshopDisplay from "./WorkshopDisplay";
 import {WorkshopStatus, WorkshopType} from "../ServerTypes";
 
 test('It should render workshop data',() => {
@@ -9,7 +9,7 @@ test('It should render workshop data',() => {
         workshopstatus: WorkshopStatus.OPEN,
         id: "workshop-id"
     }
-    render(<WorkshopInfo workshop={workshop}/>);
+    render(<WorkshopDisplay workshop={workshop} displayLink={true}/>);
 
     //screen.logTestingPlaygroundURL();
     const heading = screen.getByRole("heading");

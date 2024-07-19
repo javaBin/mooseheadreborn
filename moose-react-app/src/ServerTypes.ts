@@ -10,3 +10,8 @@ export interface WorkshopType {
     name: string,
     workshopstatus: WorkshopStatus
 }
+
+export interface AddParticipantInput {
+    name: String,
+    email: String
+}

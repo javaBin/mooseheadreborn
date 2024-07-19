@@ -1,13 +1,23 @@
-import {WorkshopType} from "../ServerTypes";
+import {AddParticipantInput, WorkshopType} from "../ServerTypes";
+import RegisterParticipant from "./RegisterParticipant";
+import WorkshopDisplay from "./WorkshopDisplay";
 
 interface WorkshopInfoProps {
     workshop:WorkshopType
 }
 const WorkshopInfo: React.FC<WorkshopInfoProps> = ({workshop}) => {
+    const handleRegisterParticipant:(addParticipantInput:AddParticipantInput)=>Promise<string|null> = (participant: AddParticipantInput)  => {
+        return new Promise((resolve,reject) => {
+
+        });
+    };
     return (<div>
-        <h2>{workshop.name}</h2>
-        <p>Status: {workshop.workshopstatus}</p>
-        <p><a href={"/workshop/" + workshop.id}>Register</a></p>
+        <h1>Registration</h1>
+        <WorkshopDisplay workshop={workshop} displayLink={false}/>
+
+        <div>
+            <RegisterParticipant onRegisterParticipant={handleRegisterParticipant}/>
+        </div>
     </div>);
 }
 
