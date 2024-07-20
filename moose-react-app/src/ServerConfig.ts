@@ -1,9 +1,14 @@
 import {WorkshopType} from "./ServerTypes";
 
+interface WorkshopFromServer {
+    workshop: WorkshopType|null;
+    errormessage: string|null;
+}
+
 const ServerConfig = {
     //address: "",
     address: "http://localhost:8080",
-    readWorkshopFromServer: (workshopId: string):Promise<WorkshopType|String> => {
+    readWorkshopFromServer: (workshopId: string):Promise<WorkshopFromServer> => {
         return new Promise((resolve, reject) => {
             fetch(ServerConfig.address + "/api/workshop/" + workshopId)//
                 .then(response => {
@@ -15,9 +20,9 @@ const ServerConfig = {
                         });
 
                     }
-                }).then(json => resolve(json))
+                }).then(json => resolve({workshop : json,errormessage:null}))
                 .catch(error => {
-                    resolve(error.message);
+                    resolve({workshop:null,errormessage:error.message});
                 });
 
         })

@@ -1,10 +1,8 @@
-import {AddParticipantInput, WorkshopType} from "../ServerTypes";
+import {WorkshopType} from "../ServerTypes";
 
 interface WorkshopRegistrationProps {
     workshop:WorkshopType,
-    accessToken:string | null,
-    onRegisterParticipant:(addParticipantInput:AddParticipantInput)=>Promise<string|null>,
-
+    accessToken:string,
 }
 
 const WorkshopRegistration : React.FC<WorkshopRegistrationProps> = (props) => {
