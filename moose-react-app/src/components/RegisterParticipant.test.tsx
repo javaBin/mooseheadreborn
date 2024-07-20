@@ -6,6 +6,10 @@ import RegisterParticipant from "./RegisterParticipant";
 
 test("Should call callback on correct input",() => {
     const callbackMock = jest.fn();
+    const callbackPromise = new Promise((resolve, reject) => {
+        resolve(null);
+    });
+    callbackMock.mockReturnValue(callbackPromise);
     render(<RegisterParticipant onRegisterParticipant={callbackMock}/>)
     const nameInput = screen.getByPlaceholderText("Your name");
     const emailInput = screen.getByPlaceholderText("Enter email");
@@ -29,7 +33,7 @@ test('Should give error if submitting without email',async () => {
     const nameInput = screen.getByPlaceholderText("Your name");
     await user.type(nameInput, "John Doe");
     const submitButton = screen.getByRole("button", {name: "Submit"});
-    console.log("Ready")
+
     act(() => {
         user.click(submitButton);
     });
@@ -42,4 +46,25 @@ test('Should give error if submitting without email',async () => {
     const alertElement = await screen.findByRole('alert');
     expect(alertElement).toBeInTheDocument();
     expect(alertElement).toHaveTextContent("Email is required");
-})
+});
+
+test('Should give error if receive error from callback',async () =>  {
+    const callbackMock = jest.fn();
+    const callbackPromise = new Promise((resolve, reject) => {
+        resolve("Error from server");
+    });
+    callbackMock.mockReturnValue(callbackPromise);
+    render(<RegisterParticipant onRegisterParticipant={callbackMock}/>)
+    const nameInput = screen.getByPlaceholderText("Your name");
+    const emailInput = screen.getByPlaceholderText("Enter email");
+    user.type(nameInput, "John Doe");
+    user.type(emailInput, "john.doe@example.com");
+    const submitButton = screen.getByRole("button", {name: "Submit"});
+    user.click(submitButton);
+
+    const alertElement = await screen.findByRole('alert');
+    expect(alertElement).toBeInTheDocument();
+    expect(alertElement).toHaveTextContent("Error from server");
+
+});
+

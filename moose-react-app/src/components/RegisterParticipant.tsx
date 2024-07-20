@@ -12,6 +12,7 @@ const RegisterParticipant:React.FC<RegisterParticipantProps> = ({onRegisterParti
     const [errormessage, setErrormessage] = useState<string | null>(null);
     const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
         event.preventDefault();
+        setErrormessage(null);
         if (nameRef.current && emailRef.current) {
             const emailValue = emailRef.current.value;
             const nameValue = nameRef.current.value;
@@ -19,11 +20,18 @@ const RegisterParticipant:React.FC<RegisterParticipantProps> = ({onRegisterParti
                 setErrormessage("Email is required");
                 return
             }
+            if (!nameValue || nameValue.length === 0) {
+                setErrormessage("Name is required");
+                return;
+            }
             const addParticipantInput = {
                 name: nameValue,
                 email: emailValue
             }
-            onRegisterParticipant(addParticipantInput);
+            onRegisterParticipant(addParticipantInput)
+                .then(servermessage => {
+                    setErrormessage(servermessage);
+                });
         }
     }
     return (<Form>
