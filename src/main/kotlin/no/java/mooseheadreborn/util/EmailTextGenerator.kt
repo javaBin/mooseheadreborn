@@ -7,7 +7,8 @@ enum class EmailTemplate {
 
 enum class EmailVariable {
     REGISTRATION_ID,
-    ACCESS_KEY
+    REGISTER_KEY,
+
 }
 
 object EmailTextGenerator {

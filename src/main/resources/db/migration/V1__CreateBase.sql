@@ -16,6 +16,14 @@ CREATE TABLE particiant(
     activated_at TIMESTAMPTZ NULL
 );
 
+CREATE TABLE participant_registration(
+    id VARCHAR NOT NULL,
+    particiapant_id VARCHAR NOT NULL,
+    register_token VARCHAR NOT NULL,
+    created TIMESTAMPTZ NOT NULL,
+    used_at TIMESTAMPTZ NULL
+);
+
 CREATE TABLE registration(
     id VARCHAR NOT NULL PRIMARY KEY,
     status VARCHAR NOT NULL,

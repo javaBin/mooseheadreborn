@@ -51,9 +51,9 @@ class RestController(
     }
 
     @PostMapping("/api/activateParticipant")
-    fun activateParticipant(@RequestBody activateParticipantDto: ActivateParticipantDto):ResponseEntity<NoDataDto> {
+    fun activateParticipant(@RequestBody activateParticipantDto: ActivateParticipantDto):ResponseEntity<ParticipantActivationDto> {
         return participantService.activateParticipant(activateParticipantDto.accessKey).fold(
-            left = { noData -> ResponseEntity.ok(noData) },
+            left = { participantActivationDto -> ResponseEntity.ok(participantActivationDto) },
             right = { errormessage -> throw BadRequestException(errormessage)}
         )
 
