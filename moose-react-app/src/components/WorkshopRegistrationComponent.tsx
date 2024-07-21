@@ -11,13 +11,6 @@ interface WorkshopInfoProps {
 const WorkshopRegistrationComponent: React.FC<WorkshopInfoProps> = ({workshopId,accessToken}) => {
     const [workshop, setWorkshop] = useState<WorkshopType>();
 
-
-    const handleRegisterParticipant:(addParticipantInput:AddParticipantInput)=>Promise<string|null> = (participant: AddParticipantInput)  => {
-        return new Promise((resolve,reject) => {
-
-        });
-    };
-
     useEffect(() => {
         ServerConfig.readWorkshopFromServer(workshopId).then(resultFromServer => {
                 if (resultFromServer.workshop) {
@@ -32,7 +25,7 @@ const WorkshopRegistrationComponent: React.FC<WorkshopInfoProps> = ({workshopId,
         {workshop && <WorkshopDisplay workshop={workshop} displayLink={false}/>}
 
         <div>
-            <RegisterParticipant onRegisterParticipant={handleRegisterParticipant}/>
+            <RegisterParticipant/>
         </div>
     </div>);
 }

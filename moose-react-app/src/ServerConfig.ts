@@ -1,9 +1,10 @@
-import {WorkshopType} from "./ServerTypes";
+import {AddParticipantInput, WorkshopType} from "./ServerTypes";
 
 interface WorkshopFromServer {
     workshop: WorkshopType|null;
     errormessage: string|null;
 }
+
 
 const ServerConfig = {
     //address: "",
@@ -27,5 +28,6 @@ const ServerConfig = {
 
         })
     }
+
 };
 export default ServerConfig;

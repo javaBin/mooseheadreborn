@@ -1,12 +1,16 @@
 import {AddParticipantInput} from "../ServerTypes";
 import {Form, Button, Alert} from "react-bootstrap";
 import { useRef, useState } from "react";
+import registerParticipantToserver from "../hooks/registerParticipantToServer";
 
-interface RegisterParticipantProps {
-    onRegisterParticipant:(addParticipantInput:AddParticipantInput)=>Promise<string|null>,
+enum RegisterParticipantState {
+    STARTING,
+    FORM,
+    DONE
 }
 
-const RegisterParticipant:React.FC<RegisterParticipantProps> = ({onRegisterParticipant}) => {
+const RegisterParticipant = () => {
+    const [registerParticipantState,setRegisterParticipantState] = useState<RegisterParticipantState>(RegisterParticipantState.STARTING);
     const nameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
     const [errormessage, setErrormessage] = useState<string | null>(null);
@@ -28,27 +32,41 @@ const RegisterParticipant:React.FC<RegisterParticipantProps> = ({onRegisterParti
                 name: nameValue,
                 email: emailValue
             }
-            onRegisterParticipant(addParticipantInput)
+            registerParticipantToserver(addParticipantInput)
                 .then(servermessage => {
-                    setErrormessage(servermessage);
+                    if (servermessage) {
+                        setErrormessage(servermessage);
+                    } else {
+                        setRegisterParticipantState(RegisterParticipantState.DONE);
+                    }
                 });
         }
     }
-    return (<Form>
-        <Form.Group>
-            <Form.Label>Name</Form.Label>
-            <Form.Control type="text" placeholder="Your name" ref={nameRef}/>
-        </Form.Group>
-        <Form.Group>
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" ref={emailRef}/>
-        </Form.Group>
-        {errormessage && <Alert variant="danger">{errormessage}</Alert>}
-        <Button variant="primary" type="submit" onClick={handleSubmit}>
-            Submit
-        </Button>
+    const onStartingButton = () => {
+        setRegisterParticipantState(RegisterParticipantState.FORM);
+    }
+    return (<div>
+        {(registerParticipantState === RegisterParticipantState.STARTING) &&
+            <Button variant="info" onClick={onStartingButton}>Register</Button>}
+        {(registerParticipantState === RegisterParticipantState.FORM) &&
+            <Form>
+                <Form.Group>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control type="text" placeholder="Your name" ref={nameRef}/>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control type="email" placeholder="Enter email" ref={emailRef}/>
+                </Form.Group>
+                {errormessage && <Alert variant="danger">{errormessage}</Alert>}
+                <Button variant="primary" type="submit" onClick={handleSubmit}>
+                    Submit
+                </Button>
 
-    </Form>);
+            </Form>}
+        {(registerParticipantState === RegisterParticipantState.DONE) &&
+            <p>Check your email and click link to continue</p>}
+    </div>);
 }
 
 export default RegisterParticipant;
