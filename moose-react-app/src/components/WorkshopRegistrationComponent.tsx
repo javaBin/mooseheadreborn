@@ -2,7 +2,7 @@ import {AddParticipantInput, WorkshopType} from "../ServerTypes";
 import RegisterParticipant from "./RegisterParticipant";
 import WorkshopDisplay from "./WorkshopDisplay";
 import {useEffect, useState} from "react";
-import ServerConfig from "../ServerConfig";
+import readWorkshopFromServer from "../hooks/readWorkshopFromServer";
 
 interface WorkshopInfoProps {
     workshopId:string,
@@ -12,7 +12,7 @@ const WorkshopRegistrationComponent: React.FC<WorkshopInfoProps> = ({workshopId,
     const [workshop, setWorkshop] = useState<WorkshopType>();
 
     useEffect(() => {
-        ServerConfig.readWorkshopFromServer(workshopId).then(resultFromServer => {
+        readWorkshopFromServer(workshopId).then(resultFromServer => {
                 if (resultFromServer.workshop) {
                     setWorkshop(resultFromServer.workshop);
                 }
