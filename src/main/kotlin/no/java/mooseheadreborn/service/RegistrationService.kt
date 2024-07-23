@@ -17,7 +17,7 @@ class RegistrationService(
     private val timeService: MyTimeService,
     private val sendMailService:SendMailService,
 ) {
-    fun addRegistration(accessToken:String,workshopId:String,numParticipants:Int):Either<RegistrationStatus,String> {
+    fun addRegistration(accessToken:String,workshopId:String,numParticipants:Int):Either<AddRegistrationResultDto,String> {
         if (numParticipants < 1) {
             return Either.Right("Invalid number of participants")
         }
@@ -49,7 +49,11 @@ class RegistrationService(
             EmailTextGenerator.loadText(EmailTemplate.REGISTER_CONFIRMATION, mapOf(EmailVariable.REGISTRATION_ID to rr.id))
         )
 
-        return Either.Left(registrationStatus)
+        return Either.Left(AddRegistrationResultDto(
+            registrationStatus = registrationStatus,
+            registrationId = rr.id
+        ))
+
     }
 
     fun cancelRegistration(registrationId:String):Either<NoDataDto,String> {
@@ -122,4 +126,42 @@ class RegistrationService(
             )
         )
     }
+
+    private fun readUserRegistration(workshopId: String,accessToken: String?):Either<Pair<RegistrationStatus,String?>,String> {
+        if (accessToken == null) {
+            return Either.Left(Pair(RegistrationStatus.NOT_LOGGED_IN,null))
+        }
+        val particiantRecord:ParticiantRecord = participantRepository.participantByAccessKey(accessToken)?:return Either.Right("Unknown accessToken")
+        val registrationRecordList = registrationRepository.registationListByParticipant(particiantRecord.id)
+        val registrationRecord:RegistrationRecord? = registrationRecordList.firstOrNull { it.id == workshopId && it.cancelledAt == null}?:
+            registrationRecordList.firstOrNull { it.id == workshopId }
+        if (registrationRecord == null) {
+            return Either.Left(Pair(RegistrationStatus.NOT_REGISTERED,null))
+        }
+        if (registrationRecord.cancelledAt != null) {
+            return Either.Left(Pair(RegistrationStatus.CANCELLED, null))
+        }
+        val registrationStatus = RegistrationStatus.valueOf(registrationRecord.status)
+        return Either.Left(Pair(registrationStatus,registrationRecord.id))
+    }
+
+    fun participantInfoForWorkshop(workshopId: String,accessToken: String?):Either<UserWorkshopRegistrationDto,String> {
+        val workshopRecord = workshopRepository.workshopFromId(workshopId)?:return Either.Right("Unknown workshopid")
+        val workshopDto:WorkshopDto = WorkshopDto.toDto(workshopRecord, Instant.now())
+        val userRegistration = readUserRegistration(workshopId,accessToken)
+        return userRegistration.fold(
+            left = { (registrationStatus: RegistrationStatus, registrationId: String?) ->
+                Either.Left(
+                    UserWorkshopRegistrationDto(
+                        workshop = workshopDto,
+                        registrationStatus = registrationStatus,
+                        registrationStatusText = registrationStatus.displayText,
+                        registrationId = registrationId
+                    )
+                )
+            },
+            right = {errormessage:String -> Either.Right(errormessage)}
+        )
+    }
+
 }

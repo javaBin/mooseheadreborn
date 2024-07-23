@@ -4,10 +4,15 @@ import WorkshopRegistrationComponent from "../components/WorkshopRegistrationCom
 
 function WorkshopRegistryPage() {
     const { workshopId} = useParams<{workshopId: string}>();
+    const accessToken = window.localStorage.getItem("accessToken");
+
+    if (workshopId) {
+        window.localStorage.setItem("currentWorkshopId", workshopId);
+    }
 
 
     return (<Container>
-        {workshopId && <WorkshopRegistrationComponent workshopId={workshopId} accessToken={null}/>}
+        {workshopId && <WorkshopRegistrationComponent workshopId={workshopId} accessToken={accessToken}/>}
     </Container>);
 }
 

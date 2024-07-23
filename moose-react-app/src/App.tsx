@@ -8,6 +8,7 @@ import {
 import MainListingPage from "./pages/MainListingPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import WorkshopRegistryPage from "./pages/WorkshopRegistryPage";
+import ActivateParticipantPage from "./pages/ActivateParticipantPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
             <Route path="/" element={<MainListingPage/>} />
             <Route path="/workshop/:workshopId" element={<WorkshopRegistryPage/>} />
+            <Route path="/activate/:registerKey" element={<ActivateParticipantPage/>} />
         </Routes>
       </BrowserRouter>
     </div>

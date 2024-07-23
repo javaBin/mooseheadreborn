@@ -33,6 +33,14 @@ class RestController(
         return ResponseEntity.ok(workshopDto)
     }
 
+    @PostMapping("/api/readWorkshop")
+    fun workshopWithUser(@RequestBody readWorkshopInfoInputDto:ReadWorkshopInfoInputDto):ResponseEntity<UserWorkshopRegistrationDto> {
+        return registrationService.participantInfoForWorkshop(readWorkshopInfoInputDto.workshopId,readWorkshopInfoInputDto.accessToken).fold(
+            left = { userWorkshopRegistrationDto -> ResponseEntity.ok(userWorkshopRegistrationDto) },
+            right = { errormessage -> throw BadRequestException(errormessage)}
+        )
+    }
+
 
     @PostMapping("/api/addWorkshop")
     fun addWorkshop(@RequestBody addWorkshopDto: AddWorkshopDto):ResponseEntity<ResultWithId> {
@@ -52,7 +60,7 @@ class RestController(
 
     @PostMapping("/api/activateParticipant")
     fun activateParticipant(@RequestBody activateParticipantDto: ActivateParticipantDto):ResponseEntity<ParticipantActivationDto> {
-        return participantService.activateParticipant(activateParticipantDto.accessKey).fold(
+        return participantService.activateParticipant(activateParticipantDto.registerKey).fold(
             left = { participantActivationDto -> ResponseEntity.ok(participantActivationDto) },
             right = { errormessage -> throw BadRequestException(errormessage)}
         )
@@ -66,7 +74,7 @@ class RestController(
             workshopId = addRegistrationDto.workshopId,
             numParticipants = addRegistrationDto.numParticipants?:1
         ).fold(
-            left = { registrationStatus -> ResponseEntity.ok(AddRegistrationResultDto(registrationStatus.name)) },
+            left = { addRegistrationResultDto -> ResponseEntity.ok(addRegistrationResultDto) },
             right = { errormessage -> throw BadRequestException(errormessage)}
         )
     }

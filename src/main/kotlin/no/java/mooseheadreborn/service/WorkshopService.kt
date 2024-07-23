@@ -17,7 +17,7 @@ class WorkshopService(
     fun allWorkshops(): List<WorkshopDto> {
         val workshopRecords = workshopRepository.allWorkshops()
         val now:Instant = timeService.currentTime()
-        val workshopDtos = workshopRecords.map { toDto(it,now) }
+        val workshopDtos = workshopRecords.map { WorkshopDto.toDto(it,now) }
         return workshopDtos
     }
 
@@ -25,21 +25,10 @@ class WorkshopService(
         val workshopRecord = workshopRepository.workshopFromId(workshopId)?:return null
 
         val now:Instant = timeService.currentTime()
-        return toDto(workshopRecord,now)
+        return WorkshopDto.toDto(workshopRecord,now)
     }
 
-    private fun toDto(workshopRecord:WorkshopRecord,now:Instant):WorkshopDto {
-        val openTime:Instant = workshopRecord.registrationOpen.toInstant()
-        val status:WorkshopStatus = when {
-            openTime.isBefore(now) -> WorkshopStatus.OPEN
-            else -> WorkshopStatus.NOT_OPEN
-        }
-        return WorkshopDto(
-            id = workshopRecord.id,
-            name = workshopRecord.name,
-            workshopstatus = status,
-        )
-    }
+
 
     fun addWorkshop(addWorkshopDto: AddWorkshopDto): Either<ResultWithId,String> {
         val id:String = addWorkshopDto.id?:UUID.randomUUID().toString()

@@ -6,12 +6,40 @@ export enum WorkshopStatus {
 }
 
 export interface WorkshopType {
-    id: string,
-    name: string,
-    workshopstatus: WorkshopStatus
+    id: string;
+    name: string;
+    workshopstatus: WorkshopStatus;
+    opensAt: string;
+    registerLimit: number;
 }
 
 export interface AddParticipantInput {
     name: String,
     email: String
+}
+
+export enum RegistrationStatus {
+    NOT_LOGGED_IN = "NOT_LOGGED_IN",
+    NOT_REGISTERED = "NOT_REGISTERED",
+    REGISTERED = "REGISTERED",
+    WAITING = "WAITING",
+    CANCELLED = "CANCELLED",
+}
+
+export interface WorkshopInfoFromServer {
+    workshop: WorkshopType;
+    registrationStatus: RegistrationStatus;
+    registrationStatusText:string;
+    registrationId:string|null;
+}
+
+export interface AddRegistrationInput {
+    accessToken:string;
+    workshopId:string,
+    numParticipants:number
+}
+
+export interface AddRegistrationOutput {
+    registrationStatus:RegistrationStatus;
+    registrationId:string;
 }
