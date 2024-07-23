@@ -44,7 +44,8 @@ test('should be able to register',async () => {
 
     user.click(registerButton);
 
-    const await screen.findByText("You are registered on this workshop");
+    const registerText =  await screen.findByText("You are registered on this workshop");
+    expect(registerText).toBeInTheDocument();
     expect(givenInput).toEqual({
         accessToken:accessToken,
         workshopId:workshopId,
