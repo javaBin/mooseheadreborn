@@ -43,3 +43,13 @@ export interface AddRegistrationOutput {
     registrationStatus:RegistrationStatus;
     registrationId:string;
 }
+
+export interface CancelRegistrationInput {
+    registrationId: string;
+    accessToken: string|null;
+}
+
+export interface CancelRegistrationOutput {
+    registrationStatus:RegistrationStatus;
+}
+

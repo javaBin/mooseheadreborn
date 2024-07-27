@@ -89,5 +89,27 @@ test('should not display registration status closed', () => {
     expect(screen.getByText("Workshop not open for registration anymore.")).toBeInTheDocument();
 });
 
+test('should be able to cancel',() => {
+    const accessToken = "myAccessToken";
+    const workshopId = "workshopId";
+    const registrationId = "myRegistrationId";
 
+    const infoFromServer:WorkshopInfoFromServer = {
+        workshop: {
+            id: workshopId,
+            name: "Some workshop",
+            workshopstatus: WorkshopStatus.OPEN,
+            opensAt: "July 22 at 09:34",
+            registerLimit: 1
+        },
+        registrationStatus: RegistrationStatus.REGISTERED,
+        registrationStatusText: "registered",
+        registrationId: registrationId
+    }
+    render(<WorkshopRegistration workshopInfoFromServer={infoFromServer} accessToken={accessToken}/>);
+    //screen.debug();
+    expect(screen.getByText("You are registered on this workshop")).toBeInTheDocument();
+    //const cancelButton = screen.getByRole("button");
+    //expect(cancelButton).toBeInTheDocument();
+});
 

@@ -80,9 +80,9 @@ class RestController(
     }
 
     @PostMapping("/api/cancelRegistration")
-    fun cancelRegistration(@RequestBody cancelRegistrationDto: CancelRegistrationDto):ResponseEntity<NoDataDto> {
-        return registrationService.cancelRegistration(cancelRegistrationDto.registrationId).fold(
-            left = { noData -> ResponseEntity.ok(noData) },
+    fun cancelRegistration(@RequestBody cancelRegistrationDto: CancelRegistrationDto):ResponseEntity<CancelRegistrationResultDto> {
+        return registrationService.cancelRegistration(cancelRegistrationDto.registrationId,cancelRegistrationDto.accessToken).fold(
+            left = { cancelRegistrationResultDto -> ResponseEntity.ok(cancelRegistrationResultDto) },
             right = { errormessage -> throw BadRequestException(errormessage)}
         )
     }

@@ -56,7 +56,7 @@ class RegistrationService(
 
     }
 
-    fun cancelRegistration(registrationId:String):Either<NoDataDto,String> {
+    fun cancelRegistration(registrationId:String,accessToken: String?):Either<CancelRegistrationResultDto,String> {
         val registation =  registrationRepository.registrationForId(registrationId)
             ?:return Either.Right("Registration not found")
         if (registation.cancelledAt != null) {
@@ -90,8 +90,9 @@ class RegistrationService(
                 }
             }
         }
-
-        return Either.Left(NoDataDto())
+        val particiantRecord:ParticiantRecord? = accessToken?.let { participantRepository.participantByAccessKey(it) }
+        val registrationStatus:RegistrationStatus = if (particiantRecord != null) RegistrationStatus.NOT_REGISTERED else RegistrationStatus.NOT_LOGGED_IN
+        return Either.Left(CancelRegistrationResultDto(registrationStatus))
     }
 
     private fun computeRegistrationStatus(workshopRecord: WorkshopRecord,numParticipants: Int):RegistrationStatus {
@@ -133,8 +134,8 @@ class RegistrationService(
         }
         val particiantRecord:ParticiantRecord = participantRepository.participantByAccessKey(accessToken)?:return Either.Right("Unknown accessToken")
         val registrationRecordList = registrationRepository.registationListByParticipant(particiantRecord.id)
-        val registrationRecord:RegistrationRecord? = registrationRecordList.firstOrNull { it.id == workshopId && it.cancelledAt == null}?:
-            registrationRecordList.firstOrNull { it.id == workshopId }
+        val registrationRecord:RegistrationRecord? = registrationRecordList.firstOrNull { it.workshop == workshopId && it.cancelledAt == null}?:
+            registrationRecordList.firstOrNull { it.workshop == workshopId }
         if (registrationRecord == null) {
             return Either.Left(Pair(RegistrationStatus.NOT_REGISTERED,null))
         }
