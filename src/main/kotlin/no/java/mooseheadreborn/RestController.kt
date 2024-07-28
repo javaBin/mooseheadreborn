@@ -33,6 +33,22 @@ class RestController(
         return ResponseEntity.ok(workshopDto)
     }
 
+    @GetMapping("/api/registration/{registrationId}")
+    fun registrationInfo(@PathVariable registrationId:String?):ResponseEntity<UserWorkshopRegistrationDto> {
+        if (registrationId == null) {
+            throw BadRequestException("RegistrationId cannot be null")
+        }
+        return registrationService.participantInfoFromRegistrationId(registrationId).fold(
+            left = { userWorkshopRegistrationDto: UserWorkshopRegistrationDto ->
+                ResponseEntity.ok(
+                    userWorkshopRegistrationDto
+                )
+            },
+            right = { errormessage: String -> throw BadRequestException(errormessage) }
+        )
+    }
+
+
     @PostMapping("/api/readWorkshop")
     fun workshopWithUser(@RequestBody readWorkshopInfoInputDto:ReadWorkshopInfoInputDto):ResponseEntity<UserWorkshopRegistrationDto> {
         return registrationService.participantInfoForWorkshop(readWorkshopInfoInputDto.workshopId,readWorkshopInfoInputDto.accessToken).fold(
