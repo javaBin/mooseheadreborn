@@ -11,12 +11,9 @@ jest.mock("../hooks/addRegistrationToServer",() => {
         givenInput = addRegistrationInput;
         return new Promise((resolve, reject) => {
            const result = {
-               addRegistrationOutput: {
-                   registrationStatus: "REGISTERED",
-                   registrationId:"myRegId"
-               },
-               errormessage: null
-           }
+               registrationStatus: "REGISTERED",
+               registrationId:"myRegId"
+           };
            resolve(result);
         });
     }

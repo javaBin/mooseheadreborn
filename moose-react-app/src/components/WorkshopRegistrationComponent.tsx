@@ -4,6 +4,7 @@ import WorkshopDisplay from "./WorkshopDisplay";
 import {useEffect, useState} from "react";
 import workshopInfoWithUserFromServer from "../hooks/workshopInfoWithUserFromServer";
 import WorkshopRegistration from "./WorkshopRegistration";
+import {Alert} from "react-bootstrap";
 
 interface WorkshopInfoProps {
     workshopId:string,
@@ -11,18 +12,20 @@ interface WorkshopInfoProps {
 }
 const WorkshopRegistrationComponent: React.FC<WorkshopInfoProps> = ({workshopId,accessToken}) => {
     const [workshopInfoFromServer, setWorkshopInfoFromServer] = useState<WorkshopInfoFromServer|null>(null);
+    const [errormessage, setErrormessage] = useState<string|null>(null);
 
     useEffect(() => {
         workshopInfoWithUserFromServer(workshopId,accessToken).then(resultFromServer => {
-                if (resultFromServer.workshopInfoFromServer) {
-                    setWorkshopInfoFromServer(resultFromServer.workshopInfoFromServer);
-                }
+                setWorkshopInfoFromServer(resultFromServer);
             }
-        )
+        ).catch(error => {
+            setErrormessage(error)}
+        );
     }, []);
 
     return (<div>
         <h1>Registration</h1>
+        {errormessage && <Alert variant={"danger"}>{errormessage}</Alert>}
         {workshopInfoFromServer?.workshop && <WorkshopDisplay workshop={workshopInfoFromServer.workshop} displayLink={false}/>}
 
         {(workshopInfoFromServer && workshopInfoFromServer.registrationStatus === RegistrationStatus.NOT_LOGGED_IN) && <RegisterParticipant/>}

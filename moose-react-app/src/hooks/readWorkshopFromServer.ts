@@ -5,8 +5,8 @@ interface WorkshopFromServer {
     workshop: WorkshopType|null;
     errormessage: string|null;
 }
-
-const readWorkshopFromServer =  (workshopId: string):Promise<WorkshopFromServer> => {
+// NOT USED
+const readWorkshopFromServer =  (workshopId: string):Promise<WorkshopType> => {
     return new Promise((resolve, reject) => {
         fetch(ServerConfig.address + "/api/workshop/" + workshopId)//
             .then(response => {
@@ -18,9 +18,9 @@ const readWorkshopFromServer =  (workshopId: string):Promise<WorkshopFromServer>
                     });
 
                 }
-            }).then(json => resolve({workshop : json,errormessage:null}))
+            }).then(json => resolve(json))
             .catch(error => {
-                resolve({workshop:null,errormessage:error.message});
+                reject(error.message);
             });
 
     })

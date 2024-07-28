@@ -1,12 +1,9 @@
 import {AddRegistrationInput, AddRegistrationOutput} from "../ServerTypes";
 import ServerConfig from "../ServerConfig";
 
-interface AddRegistratioToServerResult {
-    addRegistrationOutput:AddRegistrationOutput|null;
-    errormessage:string|null;
-}
 
-const addRegistrationToServer = (addRegistrationInput:AddRegistrationInput):Promise<AddRegistratioToServerResult> => {
+
+const addRegistrationToServer = (addRegistrationInput:AddRegistrationInput):Promise<AddRegistrationOutput> => {
     return new Promise((resolve, reject) => {
         fetch(ServerConfig.address + "/api/addRegistration", {
             method: "POST",
@@ -26,10 +23,10 @@ const addRegistrationToServer = (addRegistrationInput:AddRegistrationInput):Prom
                 }
             })
             .then(json => {
-                resolve({addRegistrationOutput:json,errormessage:null})
+                resolve(json)
             })
             .catch(error => {
-                resolve({addRegistrationOutput : null,errormessage:error.message});
+                reject(error.message);
             });
     })
 };

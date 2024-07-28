@@ -1,12 +1,9 @@
 import ServerConfig from "../ServerConfig";
 import {json} from "node:stream/consumers";
 
-interface ActivateUserOnServerResult {
-    accessKey: string|null;
-    errormessage: string|null;
-}
 
-const activateUserOnServer = (registerKey:String):Promise<ActivateUserOnServerResult> => {
+
+const activateUserOnServer = (registerKey:String):Promise<string> => {
     return new Promise((resolve, reject) => {
         const activateInput = {
             registerKey: registerKey
@@ -29,11 +26,10 @@ const activateUserOnServer = (registerKey:String):Promise<ActivateUserOnServerRe
                 }
             })
             .then(json => {
-                console.log("fromserveractivate",json)
-                resolve({accessKey : json.accessToken,errormessage:null})
+                resolve(json.accessToken);
             })
             .catch(error => {
-                resolve({accessKey : null,errormessage:error.message});
+                reject(error.message);
             });
     })
 }

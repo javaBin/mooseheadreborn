@@ -1,15 +1,8 @@
-import {RegistrationStatus, WorkshopInfoFromServer, WorkshopType} from "../ServerTypes";
+import {WorkshopInfoFromServer} from "../ServerTypes";
 import ServerConfig from "../ServerConfig";
 
 
-
-interface WorkshopInfoServerResult {
-    workshopInfoFromServer:WorkshopInfoFromServer|null;
-    errormessage:string|null;
-}
-
-
-const workshopInfoWithUserFromServer = (workshopId:string,accessToken:string|null):Promise<WorkshopInfoServerResult> => {
+const workshopInfoWithUserFromServer = (workshopId:string,accessToken:string|null):Promise<WorkshopInfoFromServer> => {
     return new Promise((resolve, reject) => {
         const readWorkshopInput = {
             workshopId: workshopId,
@@ -33,10 +26,10 @@ const workshopInfoWithUserFromServer = (workshopId:string,accessToken:string|nul
                 }
             })
             .then(json => {
-                resolve({workshopInfoFromServer:json,errormessage:null})
+                resolve(json);
             })
             .catch(error => {
-                resolve({workshopInfoFromServer : null,errormessage:error.message});
+                reject(error.message);
             });
     })
 }

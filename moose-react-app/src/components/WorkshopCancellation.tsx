@@ -24,15 +24,10 @@ const WorkshopCancellation: React.FC<WorkshopCancellationProps> = ({registration
             registrationId: registrationId,
             accessToken: accessToken
         }
-        cancelRegistrationToServer(ci).then((cancelRegistratioToServerResult) => {
-            if (cancelRegistratioToServerResult.errormessage) {
-                setErrormessage(cancelRegistratioToServerResult.errormessage);
-            }
-            if (cancelRegistratioToServerResult.cancelRegistrationOutput) {
-                onRegistrationCancelled(cancelRegistratioToServerResult.cancelRegistrationOutput.registrationStatus);
-                setShowConfirmMessage(true);
-            }
-        });
+        cancelRegistrationToServer(ci).then((cancelRegistrationOutput) => {
+            onRegistrationCancelled(cancelRegistrationOutput.registrationStatus);
+            setShowConfirmMessage(true);
+        }).catch(errorFromServer => setErrormessage(errorFromServer));
     }
 
     return (<div>

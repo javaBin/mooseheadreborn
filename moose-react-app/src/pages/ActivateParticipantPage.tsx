@@ -14,17 +14,11 @@ function ActivateParticipantPage() {
 
     useEffect(() => {
         if (registerKey) {
-            activateUserOnServer(registerKey).then(activateUserOnServerResult => {
-                console.log("activateUserOnServerResult", activateUserOnServerResult);
-               if (activateUserOnServerResult.errormessage) {
-                   setErrormessage(activateUserOnServerResult.errormessage);
-               }
-               if (activateUserOnServerResult.accessKey) {
-                   window.localStorage.setItem("accessToken",activateUserOnServerResult.accessKey);
-                   setAccessToken(activateUserOnServerResult.accessKey);
-                   setDisplayRegisterComponent(true);
-               }
-            });
+            activateUserOnServer(registerKey).then(accessKeyFromServer => {
+               window.localStorage.setItem("accessToken",accessKeyFromServer);
+               setAccessToken(accessKeyFromServer);
+               setDisplayRegisterComponent(true);
+            }).catch(errorFromServer => setErrormessage(errorFromServer));
         } else {
             setErrormessage("Unknown page");
         }

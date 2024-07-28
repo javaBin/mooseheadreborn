@@ -10,10 +10,7 @@ jest.mock("../hooks/cancelRegistrationToServer",() => {
         serverInput = cancelRegistrationInput;
         return new Promise((resolve,reject) => {
             const result = {
-                cancelRegistrationOutput: {
-                    registrationStatus: "NOT_REGISTERED",
-                },
-                errormessage: null
+                registrationStatus: "NOT_REGISTERED",
             };
             resolve(result);
         })

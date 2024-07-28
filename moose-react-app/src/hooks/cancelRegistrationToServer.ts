@@ -1,12 +1,8 @@
 import {CancelRegistrationInput, CancelRegistrationOutput} from "../ServerTypes";
 import ServerConfig from "../ServerConfig";
 
-interface CancelRegistratioToServerResult {
-    cancelRegistrationOutput:CancelRegistrationOutput|null;
-    errormessage:string|null;
-}
 
-const cancelRegistrationToServer = (cancelRegistrationInput:CancelRegistrationInput):Promise<CancelRegistratioToServerResult> => {
+const cancelRegistrationToServer = (cancelRegistrationInput:CancelRegistrationInput):Promise<CancelRegistrationOutput> => {
     return new Promise((resolve, reject) => {
         fetch(ServerConfig.address + "/api/cancelRegistration", {
             method: "POST",
@@ -26,12 +22,12 @@ const cancelRegistrationToServer = (cancelRegistrationInput:CancelRegistrationIn
                 }
             })
             .then(json => {
-                resolve({cancelRegistrationOutput:json,errormessage:null})
+                resolve(json);
             })
             .catch(error => {
-                resolve({cancelRegistrationOutput : null,errormessage:error.message});
+                reject(error.message);
             });
-    })
+    });
 };
 
 export default cancelRegistrationToServer;
