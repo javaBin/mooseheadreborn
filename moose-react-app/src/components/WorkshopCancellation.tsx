@@ -7,10 +7,11 @@ interface WorkshopCancellationProps {
     accessToken: string|null;
     registrationId: string;
     registrationStatus: RegistrationStatus;
+    numRegistered:number|null;
     onRegistrationCancelled:(registrationStatus:RegistrationStatus)=>void
 }
 
-const WorkshopCancellation: React.FC<WorkshopCancellationProps> = ({registrationId,accessToken,registrationStatus,onRegistrationCancelled}) => {
+const WorkshopCancellation: React.FC<WorkshopCancellationProps> = ({registrationId,accessToken,registrationStatus,onRegistrationCancelled,numRegistered}) => {
     const [confirmCancel,setConfirmCancel] = useState<boolean>(false);
     const [errormessage,setErrormessage] = useState<string|null>(null);
     const [showConfirmMessage,setShowConfirmMessage] = useState<boolean>(false);
@@ -31,8 +32,8 @@ const WorkshopCancellation: React.FC<WorkshopCancellationProps> = ({registration
     }
 
     return (<div>
-        {(registrationStatus === RegistrationStatus.REGISTERED) && <p>You are registered on this workshop</p>}
-        {(registrationStatus === RegistrationStatus.WAITING) && <p>You are on the waiting list for this workshop</p>}
+        {(registrationStatus === RegistrationStatus.REGISTERED) && <p>You are registered on this workshop{numRegistered && " (Seats reserved " + numRegistered + ")"}</p>}
+        {(registrationStatus === RegistrationStatus.WAITING) && <p>You are on the waiting list for this workshop{numRegistered && " (Seats wished for " + numRegistered + ")"}</p>}
         {errormessage && <Alert variant="danger">{errormessage}</Alert>}
         {(!errormessage && !showConfirmMessage && !confirmCancel) && <Button variant={"danger"} onClick={onCancelClick}>Cancel registration</Button>}
         {(!errormessage && !showConfirmMessage && confirmCancel) && <Stack direction={"horizontal"} gap={2} >

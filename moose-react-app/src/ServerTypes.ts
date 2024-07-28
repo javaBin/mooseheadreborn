@@ -31,6 +31,7 @@ export interface WorkshopInfoFromServer {
     registrationStatus: RegistrationStatus;
     registrationStatusText:string;
     registrationId:string|null;
+    numRegistered:number|null;
 }
 
 export interface AddRegistrationInput {

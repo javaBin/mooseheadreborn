@@ -33,7 +33,8 @@ test('should be able to register',async () => {
         },
         registrationStatus: RegistrationStatus.NOT_REGISTERED,
         registrationStatusText: "Not registered",
-        registrationId: null
+        registrationId: null,
+        numRegistered: null,
     }
     render(<WorkshopRegistration workshopInfoFromServer={infoFromServer} accessToken={accessToken}/>);
     const registerButton = screen.getByRole("button");
@@ -63,7 +64,8 @@ test('should display info on not open workshop', () => {
        },
        registrationStatus: RegistrationStatus.NOT_REGISTERED,
        registrationStatusText: "Not registered",
-       registrationId: null
+       registrationId: null,
+       numRegistered: null,
    }
    render(<WorkshopRegistration workshopInfoFromServer={infoFromServer} accessToken={"myAccess"}/>);
    expect(screen.getByText("Workshop not open for registration yet. Opens July 22 at 09:34.")).toBeInTheDocument();
@@ -80,7 +82,8 @@ test('should not display registration status closed', () => {
         },
         registrationStatus: RegistrationStatus.NOT_REGISTERED,
         registrationStatusText: "Not registered",
-        registrationId: null
+        registrationId: null,
+        numRegistered:null
     }
     render(<WorkshopRegistration workshopInfoFromServer={infoFromServer} accessToken={"myAccess"}/>);
     expect(screen.getByText("Workshop not open for registration anymore.")).toBeInTheDocument();
@@ -101,7 +104,8 @@ test('should be able to cancel',() => {
         },
         registrationStatus: RegistrationStatus.REGISTERED,
         registrationStatusText: "registered",
-        registrationId: registrationId
+        registrationId: registrationId,
+        numRegistered: null
     }
     render(<WorkshopRegistration workshopInfoFromServer={infoFromServer} accessToken={accessToken}/>);
     //screen.debug();

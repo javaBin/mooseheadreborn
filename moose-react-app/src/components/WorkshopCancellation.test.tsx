@@ -20,7 +20,7 @@ jest.mock("../hooks/cancelRegistrationToServer",() => {
 test('should be avble to cancel',async () => {
     const registationId = "myRegistrationId";
     const onCancelledMock:(register:RegistrationStatus) => void = jest.fn();
-    render(<WorkshopCancellation accessToken={null} registrationId={registationId} registrationStatus={RegistrationStatus.REGISTERED} onRegistrationCancelled={onCancelledMock}/>);
+    render(<WorkshopCancellation accessToken={null} registrationId={registationId} registrationStatus={RegistrationStatus.REGISTERED} onRegistrationCancelled={onCancelledMock} numRegistered={null}/>);
     expect(screen.getByText("You are registered on this workshop")).toBeInTheDocument();
     const cancelButton = screen.getByRole("button");
     expect(cancelButton).toBeInTheDocument();

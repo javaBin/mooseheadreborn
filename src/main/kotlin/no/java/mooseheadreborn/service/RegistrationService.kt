@@ -128,22 +128,22 @@ class RegistrationService(
         )
     }
 
-    private fun readUserRegistration(workshopId: String,accessToken: String?):Either<Pair<RegistrationStatus,String?>,String> {
+    private fun readUserRegistration(workshopId: String,accessToken: String?):Either<Triple<RegistrationStatus,String?,Int?>,String> {
         if (accessToken == null) {
-            return Either.Left(Pair(RegistrationStatus.NOT_LOGGED_IN,null))
+            return Either.Left(Triple(RegistrationStatus.NOT_LOGGED_IN,null,null))
         }
         val particiantRecord:ParticiantRecord = participantRepository.participantByAccessKey(accessToken)?:return Either.Right("Unknown accessToken")
         val registrationRecordList = registrationRepository.registationListByParticipant(particiantRecord.id)
         val registrationRecord:RegistrationRecord? = registrationRecordList.firstOrNull { it.workshop == workshopId && it.cancelledAt == null}?:
             registrationRecordList.firstOrNull { it.workshop == workshopId }
         if (registrationRecord == null) {
-            return Either.Left(Pair(RegistrationStatus.NOT_REGISTERED,null))
+            return Either.Left(Triple(RegistrationStatus.NOT_REGISTERED,null,null))
         }
         if (registrationRecord.cancelledAt != null) {
-            return Either.Left(Pair(RegistrationStatus.CANCELLED, null))
+            return Either.Left(Triple(RegistrationStatus.CANCELLED, null,null))
         }
         val registrationStatus = RegistrationStatus.valueOf(registrationRecord.status)
-        return Either.Left(Pair(registrationStatus,registrationRecord.id))
+        return Either.Left(Triple(registrationStatus,registrationRecord.id,registrationRecord.participantCount))
     }
 
 
@@ -153,13 +153,14 @@ class RegistrationService(
         val workshopDto:WorkshopDto = WorkshopDto.toDto(workshopRecord, Instant.now())
         val userRegistration = readUserRegistration(workshopId,accessToken)
         return userRegistration.fold(
-            left = { (registrationStatus: RegistrationStatus, registrationId: String?) ->
+            left = { (registrationStatus: RegistrationStatus, registrationId: String?,numRegistrations:Int?) ->
                 Either.Left(
                     UserWorkshopRegistrationDto(
                         workshop = workshopDto,
                         registrationStatus = registrationStatus,
                         registrationStatusText = registrationStatus.displayText,
-                        registrationId = registrationId
+                        registrationId = registrationId,
+                        numRegistered = if (workshopRecord.registerLimit > 1) numRegistrations else null
                     )
                 )
             },
@@ -181,6 +182,7 @@ class RegistrationService(
             registrationStatus = registrationStatus,
             registrationStatusText = registrationStatus.displayText,
             registrationId = registrationRecord.id,
+            numRegistered = if (workshopRecord.registerLimit > 1) registrationRecord.participantCount else null
         )
         return Either.Left(userWorkshopRegistrationDto)
     }

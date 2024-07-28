@@ -24,7 +24,9 @@ function RegistrationViewPage() {
             {errormessage && <Alert variant={"danger"}>{errormessage}</Alert> }
             {workshopInfo?.workshop && <WorkshopDisplay workshop={workshopInfo.workshop} displayLink={false}/>}
             {workshopInfo?.registrationStatus === RegistrationStatus.CANCELLED && <p>Registration is cancelled</p>}
-            {(workshopInfo?.registrationStatus && workshopInfo.registrationStatus !== RegistrationStatus.CANCELLED && workshopInfo?.registrationId) && <WorkshopCancellation accessToken={null} registrationId={workshopInfo.registrationId} onRegistrationCancelled={onRegistrationCancelled} registrationStatus={workshopInfo.registrationStatus}/>}
+            {(workshopInfo?.registrationStatus && workshopInfo.registrationStatus !== RegistrationStatus.CANCELLED && workshopInfo?.registrationId) &&
+                <WorkshopCancellation accessToken={null} registrationId={workshopInfo.registrationId} onRegistrationCancelled={onRegistrationCancelled} registrationStatus={workshopInfo.registrationStatus} numRegistered={workshopInfo.numRegistered}/>
+            }
         </Container>
     );
 }

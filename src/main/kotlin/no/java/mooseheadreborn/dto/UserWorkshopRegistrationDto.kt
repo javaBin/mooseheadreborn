@@ -6,6 +6,7 @@ class UserWorkshopRegistrationDto(
     val workshop: WorkshopDto,
     val registrationStatus:RegistrationStatus,
     val registrationStatusText:String,
-    val registrationId:String?
+    val registrationId:String?,
+    val numRegistered:Int?,
 ) {
 }
