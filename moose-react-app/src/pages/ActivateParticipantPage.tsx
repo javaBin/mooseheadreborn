@@ -20,7 +20,6 @@ function ActivateParticipantPage() {
         if (registerKey) {
             activateUserOnServer(registerKey).then(userLoginFromServer => {
 
-               //window.localStorage.setItem("accessToken",accessKeyFromServer);
                setAccessToken(userLoginFromServer.accessToken);
                setDisplayRegisterComponent(true);
                if (setUserLogin) {

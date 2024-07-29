@@ -14,8 +14,6 @@ const defaultUserLogin:UserLogin = {
 
 export const AppContextProvider = ({children}: {children: ReactNode}) => {
     const storedAccessToken = window.localStorage.getItem("accessToken");
-    console.log("Read token");
-    console.log(storedAccessToken);
 
     const [userLogin,setUserLogin] = useState<UserLogin>(defaultUserLogin);
 
