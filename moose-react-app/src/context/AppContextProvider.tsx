@@ -1,15 +1,10 @@
 import {ReactNode, useEffect, useState} from "react";
 import {AppContext} from "./AppContext";
-import {UserLogin,UserType} from "../ServerTypes";
+import {defaultUserLogin, UserLogin, UserType} from "../ServerTypes";
 import readUserFromServer from "../hooks/readUserFromServer";
 
 
-const defaultUserLogin:UserLogin = {
-    accessToken: null,
-    name: null,
-    email: null,
-    userType:UserType.ANONYMOUS
-}
+
 
 
 export const AppContextProvider = ({children}: {children: ReactNode}) => {

@@ -17,7 +17,7 @@ function App() {
   return (
     <div>
         <AppContextProvider>
-            <TopNavbarComponent accessToken={null}/>
+            <TopNavbarComponent/>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<MainListingPage/>} />

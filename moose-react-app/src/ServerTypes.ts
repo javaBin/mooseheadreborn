@@ -66,3 +66,10 @@ export interface UserLogin {
     email: string|null,
     userType:UserType
 }
+
+export const defaultUserLogin:UserLogin = {
+    accessToken: null,
+    name: null,
+    email: null,
+    userType:UserType.ANONYMOUS
+}

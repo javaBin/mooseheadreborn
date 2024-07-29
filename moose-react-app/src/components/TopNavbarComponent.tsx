@@ -1,23 +1,28 @@
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
-import React, {useContext } from "react";
+import React, {useContext, useState} from "react";
 import { AppContext } from "../context/AppContext";
-import {UserLogin} from "../ServerTypes";
+import {defaultUserLogin, UserLogin, UserType} from "../ServerTypes";
 
-interface TopNavbarComponentProps {
-    accessToken: string|null;
-}
 
-const TopNavbarComponent:React.FC<TopNavbarComponentProps> = ({accessToken}) => {
+const TopNavbarComponent = () => {
     const appContext = useContext(AppContext);
-    const userLogin:UserLogin|undefined = appContext?.userLogin
+
+    const userLogin:UserLogin|null = appContext?.userLogin ||null;
+    //const [currentUserLogin,setCurrentUserLogin] = useState<UserLogin|null>(userLogin);
+    const setUserLogin = appContext?.setUserLogin
+    const onForgetClick = () => {
+        if (setUserLogin) {
+            setUserLogin(defaultUserLogin);
+        }
+    }
     return (<Navbar bg="primary" data-bs-theme="dark">
             <Container>
                 <Navbar.Brand href="/">JavaZone Kids Workshop registration</Navbar.Brand>
-                <Nav>
-                    <Navbar.Text>Home {userLogin && userLogin.userType}</Navbar.Text>
-                    <Nav.Link href="/">More dee</Nav.Link>
+                {(userLogin?.userType == UserType.USER) && <Nav>
+                    <Navbar.Text>{userLogin.name} ({userLogin.email})</Navbar.Text>
+                    <Button variant={"dark"} onClick={onForgetClick}>Forget me</Button>
 
-                </Nav>
+                </Nav>}
             </Container>
         </Navbar>
     );
