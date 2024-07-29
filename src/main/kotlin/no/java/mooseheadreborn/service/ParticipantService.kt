@@ -1,5 +1,6 @@
 package no.java.mooseheadreborn.service
 
+import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
 import no.java.mooseheadreborn.dto.enduser.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.*
@@ -48,7 +49,7 @@ class ParticipantService(
         return Either.Left(NoDataDto())
     }
 
-    fun activateParticipant(registerKey:String):Either<ParticipantActivationDto,String> {
+    fun activateParticipant(registerKey:String):Either<UserDto,String> {
         val pr = participantRepository.participantRegistrationByRegisterKey(registerKey)?: return Either.Right("Unknown key")
 
       val particiantRecord:ParticiantRecord = participantRepository.participantById(pr.particiapantId)?:return Either.Right("Unknown access key")
@@ -56,7 +57,33 @@ class ParticipantService(
           return Either.Right("Participant is already activated")
       }
       participantRepository.setActive(particiantRecord.id)
-      return Either.Left(ParticipantActivationDto(particiantRecord.accessKey))
+      return Either.Left(
+          UserDto(
+          accessToken = particiantRecord.accessKey,
+              name = particiantRecord.name,
+              email = particiantRecord.email,
+              userType = UserType.USER
+      ))
+    }
+
+    fun userFromAccessToken(accessToken:String):UserDto {
+        val participant: ParticiantRecord? = participantRepository.participantByAccessKey(accessToken)
+        return if (participant != null) {
+            UserDto(
+                accessToken = participant.accessKey,
+                name = participant.name,
+                email = participant.email,
+                userType = UserType.USER
+            )
+        } else {
+            UserDto(
+                accessToken = null,
+                name = null,
+                email = null,
+                userType = UserType.ANONYMOUS
+            )
+        }
+
     }
 
 

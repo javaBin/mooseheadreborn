@@ -54,3 +54,15 @@ export interface CancelRegistrationOutput {
     registrationStatus:RegistrationStatus;
 }
 
+export enum UserType {
+    USER = "USER",
+    ADMIN = "ADMIN",
+    ANONYMOUS = "ANONYMOUS",
+}
+
+export interface UserLogin {
+    accessToken: string|null;
+    name: string|null,
+    email: string|null,
+    userType:UserType
+}

@@ -1,8 +1,10 @@
 import {Alert, Container} from "react-bootstrap";
 import {useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
 import activateUserOnServer from "../hooks/activateUserOnServer";
 import WorkshopRegistrationComponent from "../components/WorkshopRegistrationComponent";
+import {AppContext} from "../context/AppContext";
+import {UserLogin} from "../ServerTypes";
 
 function ActivateParticipantPage() {
     const { registerKey} = useParams<{registerKey: string}>();
@@ -11,14 +13,20 @@ function ActivateParticipantPage() {
     const [displayRegisterComponent, setDisplayRegisterComponent] = useState<boolean>(false);
 
     const workshopId = window.localStorage.getItem("currentWorkshopId");
+    const appContext = useContext(AppContext);
+    const setUserLogin: Dispatch<SetStateAction<UserLogin>>|undefined = appContext?.setUserLogin;
 
     useEffect(() => {
         if (registerKey) {
-            activateUserOnServer(registerKey).then(accessKeyFromServer => {
-               window.localStorage.setItem("accessToken",accessKeyFromServer);
-               setAccessToken(accessKeyFromServer);
+            activateUserOnServer(registerKey).then(userLoginFromServer => {
+
+               //window.localStorage.setItem("accessToken",accessKeyFromServer);
+               setAccessToken(userLoginFromServer.accessToken);
                setDisplayRegisterComponent(true);
-            }).catch(errorFromServer => setErrormessage(errorFromServer));
+               if (setUserLogin) {
+                   setUserLogin(userLoginFromServer);
+               }
+           }).catch(errorFromServer => setErrormessage(errorFromServer));
         } else {
             setErrormessage("Unknown page");
         }

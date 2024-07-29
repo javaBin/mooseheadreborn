@@ -1,5 +1,6 @@
 package no.java.mooseheadreborn
 
+import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
 import no.java.mooseheadreborn.dto.enduser.*
 import no.java.mooseheadreborn.service.*
@@ -75,7 +76,7 @@ class RestController(
     }
 
     @PostMapping("/api/activateParticipant")
-    fun activateParticipant(@RequestBody activateParticipantDto: ActivateParticipantDto):ResponseEntity<ParticipantActivationDto> {
+    fun activateParticipant(@RequestBody activateParticipantDto: ActivateParticipantDto):ResponseEntity<UserDto> {
         return participantService.activateParticipant(activateParticipantDto.registerKey).fold(
             left = { participantActivationDto -> ResponseEntity.ok(participantActivationDto) },
             right = { errormessage -> throw BadRequestException(errormessage)}
@@ -109,6 +110,12 @@ class RestController(
             left = { participantDto -> ResponseEntity.ok(participantDto) },
             right = { errormessage -> throw BadRequestException(errormessage)}
         )
+    }
+
+    @PostMapping("/api/user")
+    fun readUser(@RequestBody accesssTokenDto: AccesssTokenDto):ResponseEntity<UserDto> {
+        val userDto:UserDto = participantService.userFromAccessToken(accesssTokenDto.accessToken)
+        return ResponseEntity.ok(userDto)
     }
 
 

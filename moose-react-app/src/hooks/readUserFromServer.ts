@@ -1,20 +1,17 @@
-import ServerConfig from "../ServerConfig";
-import {json} from "node:stream/consumers";
 import {UserLogin} from "../ServerTypes";
+import ServerConfig from "../ServerConfig";
 
-
-
-const activateUserOnServer = (registerKey:String):Promise<UserLogin> => {
+const readUserFromServer= (accessToken:string):Promise<UserLogin> => {
     return new Promise((resolve, reject) => {
-        const activateInput = {
-            registerKey: registerKey
+        const serverinput = {
+            accessToken: accessToken
         };
-        fetch(ServerConfig.address + "/api/activateParticipant", {
+        fetch(ServerConfig.address + "/api/user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(activateInput)
+            body: JSON.stringify(serverinput)
         })
             .then(response => {
                 if (response.ok) {
@@ -33,6 +30,6 @@ const activateUserOnServer = (registerKey:String):Promise<UserLogin> => {
                 reject(error.message);
             });
     })
-}
+};
 
-export default activateUserOnServer;
+export default readUserFromServer;
