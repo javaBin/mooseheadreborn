@@ -53,17 +53,18 @@ class ParticipantService(
         val pr = participantRepository.participantRegistrationByRegisterKey(registerKey)?: return Either.Right("Unknown key")
 
       val particiantRecord:ParticiantRecord = participantRepository.participantById(pr.particiapantId)?:return Either.Right("Unknown access key")
+        val userDto = UserDto(
+            accessToken = particiantRecord.accessKey,
+            name = particiantRecord.name,
+            email = particiantRecord.email,
+            userType = UserType.USER
+        )
       if (particiantRecord.activatedAt != null) {
-          return Either.Right("Participant is already activated")
+          //return Either.Right("Participant is already activated")
+          return Either.Left(userDto)
       }
       participantRepository.setActive(particiantRecord.id)
-      return Either.Left(
-          UserDto(
-          accessToken = particiantRecord.accessKey,
-              name = particiantRecord.name,
-              email = particiantRecord.email,
-              userType = UserType.USER
-      ))
+      return Either.Left(userDto)
     }
 
     fun userFromAccessToken(accessToken:String):UserDto {

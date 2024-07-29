@@ -1,5 +1,5 @@
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
-import React, {useContext, useState} from "react";
+import React, {useContext} from "react";
 import { AppContext } from "../context/AppContext";
 import {defaultUserLogin, UserLogin, UserType} from "../ServerTypes";
 
@@ -18,7 +18,7 @@ const TopNavbarComponent = () => {
     return (<Navbar bg="primary" data-bs-theme="dark">
             <Container>
                 <Navbar.Brand href="/">JavaZone Kids Workshop registration</Navbar.Brand>
-                {(userLogin?.userType == UserType.USER) && <Nav>
+                {(userLogin?.userType === UserType.USER) && <Nav>
                     <Navbar.Text>{userLogin.name} ({userLogin.email})</Navbar.Text>
                     <Button variant={"dark"} onClick={onForgetClick}>Forget me</Button>
 

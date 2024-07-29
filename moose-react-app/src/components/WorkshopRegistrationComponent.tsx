@@ -21,7 +21,7 @@ const WorkshopRegistrationComponent: React.FC<WorkshopInfoProps> = ({workshopId,
         ).catch(error => {
             setErrormessage(error)}
         );
-    }, []);
+    }, [workshopId, accessToken]);
 
     return (<div>
         <h1>Registration</h1>

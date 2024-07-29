@@ -10,7 +10,6 @@ function ActivateParticipantPage() {
     const { registerKey} = useParams<{registerKey: string}>();
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [errormessage, setErrormessage] = useState<string | null>(null);
-    const [displayRegisterComponent, setDisplayRegisterComponent] = useState<boolean>(false);
 
     const workshopId = window.localStorage.getItem("currentWorkshopId");
     const appContext = useContext(AppContext);
@@ -19,9 +18,7 @@ function ActivateParticipantPage() {
     useEffect(() => {
         if (registerKey) {
             activateUserOnServer(registerKey).then(userLoginFromServer => {
-
                setAccessToken(userLoginFromServer.accessToken);
-               setDisplayRegisterComponent(true);
                if (setUserLogin) {
                    setUserLogin(userLoginFromServer);
                }
@@ -29,7 +26,7 @@ function ActivateParticipantPage() {
         } else {
             setErrormessage("Unknown page");
         }
-    }, []);
+    }, [registerKey,setUserLogin]);
 
     return (<Container>
         {errormessage && <Alert variant="danger">{errormessage}</Alert>}

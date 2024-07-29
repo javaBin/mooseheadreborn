@@ -1,6 +1,6 @@
 import {ReactNode, useEffect, useState} from "react";
 import {AppContext} from "./AppContext";
-import {defaultUserLogin, UserLogin, UserType} from "../ServerTypes";
+import {defaultUserLogin, UserLogin} from "../ServerTypes";
 import readUserFromServer from "../hooks/readUserFromServer";
 
 
@@ -8,13 +8,15 @@ import readUserFromServer from "../hooks/readUserFromServer";
 
 
 export const AppContextProvider = ({children}: {children: ReactNode}) => {
-    const storedAccessToken = window.localStorage.getItem("accessToken");
 
     const [userLogin,setUserLogin] = useState<UserLogin>(defaultUserLogin);
 
     useEffect(() => {
+        const storedAccessToken = window.localStorage.getItem("accessToken");
         if (storedAccessToken) {
-            readUserFromServer(storedAccessToken).then((serverUserLogin) => setUserLogin(serverUserLogin))
+            readUserFromServer(storedAccessToken).then((serverUserLogin) => {
+                setUserLogin(serverUserLogin)
+            })
         }
     }, []);
 

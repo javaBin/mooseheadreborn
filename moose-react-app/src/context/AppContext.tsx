@@ -1,4 +1,4 @@
-import {UserLogin, UserType} from "../ServerTypes";
+import {UserLogin} from "../ServerTypes";
 import React, {Dispatch, SetStateAction} from "react";
 
 
