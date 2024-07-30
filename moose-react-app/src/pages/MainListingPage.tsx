@@ -3,22 +3,20 @@ import {WorkshopType} from "../ServerTypes";
 import { useEffect, useState } from "react";
 
 import WorkshopDisplay from "../components/WorkshopDisplay";
-import ServerAddress from "../hooks/ServerAddress";
+import ServerConfig from "../ServerConfig";
 
 function MainListingPage() {
     const [workshopList,setWorkshopList] = useState<WorkshopType[]>([]);
-    const serverAddress = ServerAddress();
 
     useEffect(() => {
-        if (serverAddress) {
-            fetch(serverAddress + "/api/workshopList")
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                }).then(json => setWorkshopList(json))
-        }
-    }, [serverAddress]);
+        fetch(ServerConfig.address + "/api/workshopList")
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+            }).then(json => setWorkshopList(json))
+
+    }, []);
     return (
         <Container>
             <h1>Workshops</h1>
