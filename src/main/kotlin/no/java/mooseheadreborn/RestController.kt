@@ -2,6 +2,7 @@ package no.java.mooseheadreborn
 
 import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
+import no.java.mooseheadreborn.dto.admin.*
 import no.java.mooseheadreborn.dto.enduser.*
 import no.java.mooseheadreborn.service.*
 import org.springframework.http.HttpStatus
@@ -15,6 +16,7 @@ class RestController(
     private val workshopService: WorkshopService,
     private val participantService: ParticipantService,
     private val registrationService: RegistrationService,
+    private val adminService: AdminService,
 ) {
     @GetMapping("/api/config")
     fun hello(): ConfigDto {
@@ -119,6 +121,14 @@ class RestController(
     }
 
 
+    @PostMapping("/api/adminlogin")
+    fun adminLogin(@RequestBody adminLoginDto: AdminLoginDto):ResponseEntity<UserDto> {
+        return adminService.createAccess(adminLoginDto.password).fold(
+            left = { userDto -> ResponseEntity.ok(userDto) },
+            right = { errormessage -> throw BadRequestException(errormessage)}
+        )
+
+    }
 
 
     @ExceptionHandler(BadRequestException::class)

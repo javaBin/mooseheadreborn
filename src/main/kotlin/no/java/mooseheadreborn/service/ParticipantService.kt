@@ -60,8 +60,8 @@ class ParticipantService(
             userType = UserType.USER
         )
       if (particiantRecord.activatedAt != null) {
-          //return Either.Right("Participant is already activated")
-          return Either.Left(userDto)
+          return Either.Right("Participant is already activated")
+          //return Either.Left(userDto)
       }
       participantRepository.setActive(particiantRecord.id)
       return Either.Left(userDto)

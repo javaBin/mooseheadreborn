@@ -6,5 +6,5 @@ class AddWorkshopDto(
     val workshopType:String,
     val capacity:Int,
     val registrationOpens:String?,
-
+    val accessToken:String,
 )

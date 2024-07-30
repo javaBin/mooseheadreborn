@@ -5,6 +5,7 @@ import java.util.concurrent.*
 
 enum class ConfigVariable(val defaultValue: String) {
     PORT("8080"),
+    ADMIN_PASSWORD("bingo"),
 }
 
 object Config {

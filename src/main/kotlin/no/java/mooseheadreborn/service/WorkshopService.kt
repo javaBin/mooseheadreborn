@@ -13,6 +13,7 @@ import java.util.UUID
 class WorkshopService(
     private val workshopRepository: WorkshopRepository,
     private val timeService: MyTimeService,
+    private val adminService: AdminService,
 ) {
     fun allWorkshops(): List<WorkshopDto> {
         val workshopRecords = workshopRepository.allWorkshops()
@@ -31,6 +32,9 @@ class WorkshopService(
 
 
     fun addWorkshop(addWorkshopDto: AddWorkshopDto): Either<ResultWithId,String> {
+        if (!adminService.keyIsValid(addWorkshopDto.accessToken)) {
+            return Either.Right("No access")
+        }
         val id:String = addWorkshopDto.id?:UUID.randomUUID().toString()
         val workshopType:WorkshopType = WorkshopType.fromString(addWorkshopDto.workshopType)?:
             return Either.Right("Unknown workshop type ${addWorkshopDto.workshopType}")

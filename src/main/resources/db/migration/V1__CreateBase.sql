@@ -34,3 +34,7 @@ CREATE TABLE registration(
     cancelled_at TIMESTAMPTZ NULL
 );
 
+create TABLE admin_keys(
+    key VARCHAR NOT NULL PRIMARY KEY,
+    created TIMESTAMPTZ NOT NULL
+);
