@@ -8,6 +8,11 @@ enum class ConfigVariable(val defaultValue: String) {
     ADMIN_PASSWORD("bingo"),
     SPRING_PROFILE(SpringProfile.DEV.name),
     SERVER_ADDRESS("http://localhost:3000"),
+    SENDGRID_KEY(""),
+    MAIL_FROM("program@java.no"),
+    ;
+
+    fun readValue():String = Config.getConfigValue(this)
 }
 
 object Config {
