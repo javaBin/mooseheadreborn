@@ -10,6 +10,9 @@ enum class ConfigVariable(val defaultValue: String) {
     SERVER_ADDRESS("http://localhost:3000"),
     SENDGRID_KEY(""),
     MAIL_FROM("program@java.no"),
+    POSTGRES_URL("jdbc:postgresql://localhost:5432/mooserblocal"),
+    POSTGRES_USER("localdevuser"),
+    POSTGRES_PASSWORD("localdevuser"),
     ;
 
     fun readValue():String = Config.getConfigValue(this)
