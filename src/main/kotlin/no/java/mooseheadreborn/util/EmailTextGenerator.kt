@@ -1,18 +1,34 @@
 package no.java.mooseheadreborn.util
 
-enum class EmailTemplate {
-    REGISTER_CONFIRMATION,
-    PARTICIPANT_CONFIRMATION,
+import no.java.mooseheadreborn.*
+
+enum class EmailTemplate(val templatePath:String) {
+    REGISTER_CONFIRMATION("templates/registrationConfirmation.html"),
+    REGISTER_CONFIRMATION_WAITING("templates/waitingConfirmation.html"),
+    PARTICIPANT_CONFIRMATION("templates/confirmEmail.html"),
 }
 
 enum class EmailVariable {
-    REGISTRATION_ID,
-    REGISTER_KEY,
-
+    CANCEL_LINK,
+    CONFIRM_EMAIL_LINK,
+    WORKSHOP_NAME,
 }
 
 object EmailTextGenerator {
     fun loadText(template: EmailTemplate,variableMap:Map<EmailVariable,String>): String {
-        return "some dummy email text $template variables: $variableMap"
+        val inputStream = this::class.java.classLoader.getResourceAsStream(template.templatePath)
+        val content = StringBuilder(inputStream?.bufferedReader().use { it?.readText() }?:"")
+        variableMap.forEach { (variable, value) ->
+            val search = "#${variable.name}#"
+            while (true) {
+                val pos = content.indexOf(search)
+                if (pos == -1) break
+                content.replace(pos,pos+search.length,value)
+            }
+        }
+        return content.toString()
     }
+
+    fun emailConfirnmAddress(registerKey:String):String = "${Config.getConfigValue(ConfigVariable.SERVER_ADDRESS)}/activate/$registerKey"
+    fun cancelLinkAddress(registrationId:String):String = "${Config.getConfigValue(ConfigVariable.SERVER_ADDRESS)}/registration/$registrationId"
 }

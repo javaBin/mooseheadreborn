@@ -62,5 +62,9 @@ class ParticipantRepository(
             .execute()
     }
 
+    fun allParticipants(): List<ParticiantRecord> {
+        return dslContext.selectFrom(Tables.PARTICIANT).fetch()
+    }
+
 
 }

@@ -46,7 +46,12 @@ class RegistrationService(
         registrationRepository.addRegistration(rr)
 
         sendMailService.sendEmail(participant.email,"Workshop confirmation",
-            EmailTextGenerator.loadText(EmailTemplate.REGISTER_CONFIRMATION, mapOf(EmailVariable.REGISTRATION_ID to rr.id))
+            EmailTextGenerator.loadText(
+                template = if (registrationStatus == RegistrationStatus.WAITING) EmailTemplate.REGISTER_CONFIRMATION_WAITING else EmailTemplate.REGISTER_CONFIRMATION,
+                variableMap = mapOf(
+                    EmailVariable.CANCEL_LINK to EmailTextGenerator.cancelLinkAddress(rr.id),
+                    EmailVariable.WORKSHOP_NAME to workshop.name
+                ))
         )
 
         return Either.Left(AddRegistrationResultDto(
@@ -84,7 +89,10 @@ class RegistrationService(
                         participant.email, "Workshop confirmation",
                         EmailTextGenerator.loadText(
                             EmailTemplate.REGISTER_CONFIRMATION,
-                            mapOf(EmailVariable.REGISTRATION_ID to registration.id)
+                            mapOf(
+                                EmailVariable.CANCEL_LINK to EmailTextGenerator.cancelLinkAddress(registration.id),
+                                EmailVariable.WORKSHOP_NAME to workshop.name
+                                )
                         )
                     )
                 }

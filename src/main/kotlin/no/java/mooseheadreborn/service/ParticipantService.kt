@@ -44,7 +44,7 @@ class ParticipantService(
         participantRepository.addParticipantRegistration(participantRegistrationRecord)
 
         sendMailService.sendEmail(email,"Confirm email",
-            EmailTextGenerator.loadText(EmailTemplate.PARTICIPANT_CONFIRMATION, mapOf(EmailVariable.REGISTER_KEY to participantRegistrationRecord.registerToken)))
+            EmailTextGenerator.loadText(EmailTemplate.PARTICIPANT_CONFIRMATION, mapOf(EmailVariable.CONFIRM_EMAIL_LINK to EmailTextGenerator.emailConfirnmAddress(participantRegistrationRecord.registerToken))))
 
         return Either.Left(NoDataDto())
     }

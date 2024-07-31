@@ -130,6 +130,14 @@ class RestController(
 
     }
 
+    @PostMapping("/api/adminsummary")
+    fun adminSummary(@RequestBody accesssTokenDto: AccesssTokenDto):ResponseEntity<AdminWorkshopSummaryDto> {
+        return adminService.allRegistration(accesssTokenDto.accessToken).fold(
+            left = { adminWorkshopSummaryDto: AdminWorkshopSummaryDto -> ResponseEntity.ok(adminWorkshopSummaryDto) },
+            right = { errormessage: String -> throw BadRequestException(errormessage) }
+        )
+    }
+
 
     @ExceptionHandler(BadRequestException::class)
     fun handleBadRequest(ex: BadRequestException): ResponseEntity<String> =

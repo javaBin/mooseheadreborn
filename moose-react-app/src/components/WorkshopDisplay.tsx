@@ -8,9 +8,9 @@ interface WorkshopDisplayProps {
 const WorkshopDisplay = (props: WorkshopDisplayProps) => {
     const { workshop, displayLink } = props;
     return (<div>
-        <h2>{workshop.name}</h2>
+        {displayLink && <a href={"/workshop/" + workshop.id}><h2>{workshop.name}</h2></a>}
+        {!displayLink && <h2>{workshop.name}</h2>}
         <p>Status: {workshop.workshopstatus}</p>
-        {displayLink && <p><a href={"/workshop/" + workshop.id}>Register</a></p>}
 
 
     </div>);

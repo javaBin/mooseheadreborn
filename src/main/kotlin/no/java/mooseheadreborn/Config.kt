@@ -6,6 +6,8 @@ import java.util.concurrent.*
 enum class ConfigVariable(val defaultValue: String) {
     PORT("8080"),
     ADMIN_PASSWORD("bingo"),
+    SPRING_PROFILE(SpringProfile.DEV.name),
+    SERVER_ADDRESS("http://localhost:3000"),
 }
 
 object Config {

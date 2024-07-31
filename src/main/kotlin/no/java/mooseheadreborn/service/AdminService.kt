@@ -2,14 +2,21 @@ package no.java.mooseheadreborn.service
 
 import no.java.mooseheadreborn.*
 import no.java.mooseheadreborn.domain.*
+import no.java.mooseheadreborn.dto.*
+import no.java.mooseheadreborn.dto.admin.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.AdminKeysRecord
 import no.java.mooseheadreborn.util.*
 import org.springframework.stereotype.Service
-import java.time.OffsetDateTime
+import java.time.*
 import java.util.UUID
 
 @Service
-class AdminService(private val adminRepository: AdminRepository) {
+class AdminService(
+    private val adminRepository: AdminRepository,
+    private val workshopRepository: WorkshopRepository,
+    private val registrationRepository: RegistrationRepository,
+    private val participantRepository: ParticipantRepository
+) {
     fun createAccess(password:String):Either<UserDto,String> {
         if (Config.getConfigValue(ConfigVariable.ADMIN_PASSWORD) != password) {
             return Either.Right("No access");
@@ -25,5 +32,50 @@ class AdminService(private val adminRepository: AdminRepository) {
     fun keyIsValid(key:String):Boolean {
         val adminRecord:AdminKeysRecord? = adminRepository.readKey(key)
         return (adminRecord != null)
+    }
+
+    fun allRegistration(key:String):Either<AdminWorkshopSummaryDto,String> {
+        if (!keyIsValid(key)) {
+            return Either.Right("No access");
+        }
+        val workshopList = workshopRepository.allWorkshops()
+        val registrationList = registrationRepository.allRegistrations()
+        val participantList = participantRepository.allParticipants()
+
+        val workshopDtoList:MutableList<AdminWorkshopDto> = mutableListOf()
+        val now = Instant.now()
+
+        for (workshopRecord in workshopList) {
+            val registrationThisWorkshopList = registrationList
+                .filter { it.workshop == workshopRecord.id }
+            val registratonList = registrationThisWorkshopList
+                .map { registration ->
+                    val participant = participantList.firstOrNull { it.id == registration.participant }
+                    AdminWorkshopRegistration(
+                        id = registration.id,
+                        status = RegistrationStatus.valueOf(registration.status),
+                        name = participant?.name?:"Unknown",
+                        email = participant?.email?:"Unknown",
+                        numSpots = registration.participantCount,
+                        participantId = registration.participant,
+                        registeredAt = registration.registeredAt.toString()
+                    )
+                }.sortedWith(compareBy({ if (it.status == RegistrationStatus.CANCELLED) 1 else 0},{it.registeredAt}),)
+            val seatsTaken:Int = registrationThisWorkshopList.filter { it.status != RegistrationStatus.CANCELLED.name }.sumOf { it.participantCount }
+            val adminWorkshopDto = AdminWorkshopDto(
+                id = workshopRecord.id,
+                name = workshopRecord.name,
+                workshopType = WorkshopType.valueOf(workshopRecord.workshopType),
+                workshopstatus = WorkshopDto.toStatus(workshopRecord,now),
+                opensAt = workshopRecord.registrationOpen.toString(),
+                registerLimit = workshopRecord.registerLimit,
+                capacity = workshopRecord.capacity,
+                registrationList = registratonList,
+                seatsTaken = seatsTaken
+
+            )
+            workshopDtoList.add(adminWorkshopDto)
+        }
+        return Either.Left(AdminWorkshopSummaryDto(workshopDtoList))
     }
 }

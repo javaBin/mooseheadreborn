@@ -13,6 +13,7 @@ interface WorkshopRegistrationProps {
 const WorkshopRegistration : React.FC<WorkshopRegistrationProps> = ({workshopInfoFromServer,accessToken}) => {
     const [registrationStatus,setRegistrationStatus] = useState<RegistrationStatus>(workshopInfoFromServer.registrationStatus);
     const [registrationId,setRegistrationId] = useState<string|null>(workshopInfoFromServer.registrationId);
+    const [numRegistered, setNumRegistered] = useState<number|null>(workshopInfoFromServer.numRegistered);
     const [showConfirmCancelMessage,setShowConfirmCancelMessage] = useState<boolean>(false);
     const [errormessage,setErrormessage] = useState<string|null>(null);
     const numParticipantsRef = useRef<HTMLSelectElement>(null);
@@ -30,12 +31,14 @@ const WorkshopRegistration : React.FC<WorkshopRegistrationProps> = ({workshopInf
         addRegistrationToServer(addRegistationInput).then(addRegistrationOutput => {
             setRegistrationStatus(addRegistrationOutput.registrationStatus);
             setRegistrationId(addRegistrationOutput.registrationId);
+            setNumRegistered(numbPartSelected)
         }).catch(errorFromServer => setErrormessage(errorFromServer));
     };
     const onRegistrationCancelled:(registrationStatus:RegistrationStatus)=>void = (registrationStatus) => {
         setRegistrationStatus(registrationStatus);
         setRegistrationId(null);
         setShowConfirmCancelMessage(true);
+        setNumRegistered(doSelectParticipants ? Number(numParticipantsRef.current?.value) : null);
     };
     const participantRange = doSelectParticipants ? Array.from({length: workshopInfoFromServer.workshop.registerLimit},(_,i) => i+1) : [];
     return (<div>
@@ -53,7 +56,7 @@ const WorkshopRegistration : React.FC<WorkshopRegistrationProps> = ({workshopInf
             </Form>
         }
         {errormessage && <Alert variant="danger">{errormessage}</Alert>}
-        {(registrationId) && <WorkshopCancellation accessToken={accessToken} registrationId={registrationId} onRegistrationCancelled={onRegistrationCancelled} registrationStatus={registrationStatus} numRegistered={workshopInfoFromServer.numRegistered}/>}
+        {(registrationId) && <WorkshopCancellation accessToken={accessToken} registrationId={registrationId} onRegistrationCancelled={onRegistrationCancelled} registrationStatus={registrationStatus} numRegistered={numRegistered}/>}
         {showConfirmCancelMessage && <Alert variant={"info"}>Registration has been cancelled</Alert> }
     </div>);
 };

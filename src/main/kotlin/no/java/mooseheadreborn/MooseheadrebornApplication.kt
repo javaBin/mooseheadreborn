@@ -11,7 +11,9 @@ class MooseheadrebornApplication {
         @JvmStatic
         fun main(args: Array<String>) {
             Config.loadConfig(args)
-            runApplication<MooseheadrebornApplication>(*args)
+            val application = SpringApplication(MooseheadrebornApplication::class.java)
+            application.setAdditionalProfiles(SpringProfile.current().text)
+            application.run(*args)
         }
     }
 

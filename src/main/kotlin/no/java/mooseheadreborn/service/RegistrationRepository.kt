@@ -50,4 +50,8 @@ class RegistrationRepository(
             .where(Tables.REGISTRATION.PARTICIPANT.eq(participantId))
             .fetch()
     }
+
+    fun allRegistrations():List<RegistrationRecord> {
+        return dslContext.selectFrom(Tables.REGISTRATION).fetch()
+    }
 }

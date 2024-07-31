@@ -16,11 +16,8 @@ data class WorkshopDto(
     companion object {
         private val formatter = DateTimeFormatter.ofPattern("LLLL dd' at 'HH:mm")
         fun toDto(workshopRecord: WorkshopRecord, now: Instant):WorkshopDto {
-            val openTime: Instant = workshopRecord.registrationOpen.toInstant()
-            val status:WorkshopStatus = when {
-                openTime.isBefore(now) -> WorkshopStatus.OPEN
-                else -> WorkshopStatus.NOT_OPEN
-            }
+
+            val status:WorkshopStatus = toStatus(workshopRecord,now)
             return WorkshopDto(
                 id = workshopRecord.id,
                 name = workshopRecord.name,
@@ -28,6 +25,11 @@ data class WorkshopDto(
                 opensAt = formatter.format(workshopRecord.registrationOpen),
                 registerLimit = workshopRecord.registerLimit
             )
+        }
+
+        fun toStatus(workshopRecord: WorkshopRecord,now: Instant):WorkshopStatus = when {
+            workshopRecord.registrationOpen.toInstant().isBefore(now) -> WorkshopStatus.OPEN
+            else -> WorkshopStatus.NOT_OPEN
         }
     }
 }
