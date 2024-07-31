@@ -14,7 +14,17 @@ class ParticipantService(
     private val participantRepository: ParticipantRepository,
     private val sendMailService: SendMailService,
 ) {
+    private fun isValidEmail(email: String):Boolean {
+        val atPos = email.indexOf("@")
+        return !(atPos < 1 || atPos > email.length-2)
+    }
     fun registerParticipant(name:String, email:String):Either<NoDataDto,String> {
+        if (!isValidEmail(email)) {
+            return Either.Right("Invalid email")
+        }
+        if (name.trim().isEmpty()) {
+            return Either.Right("Name is empty")
+        }
         val participant:ParticiantRecord = participantRepository.participantByEmail(email)?:participantRepository.addParticipant(ParticiantRecord(
             UUID.randomUUID().toString(),
             email,

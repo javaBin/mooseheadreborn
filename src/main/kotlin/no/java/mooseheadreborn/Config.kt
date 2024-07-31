@@ -18,7 +18,16 @@ enum class ConfigVariable(val defaultValue: String) {
 object Config {
     private val configValueMap:MutableMap<ConfigVariable,String> = ConcurrentHashMap()
 
-    fun loadConfig(args: Array<String>) {
+    fun validateAndloadConfig(args: Array<String>) {
+        loadConfig(args)
+        if (SpringProfile.PROD.name == ConfigVariable.SPRING_PROFILE.readValue() && ConfigVariable.SENDGRID_KEY.readValue().isEmpty()) {
+            throw RuntimeException("Missing sendgrid config variable")
+        }
+    }
+
+    private fun loadConfig(args: Array<String>) {
+
+
         if (args.isEmpty()) {
             return
         }

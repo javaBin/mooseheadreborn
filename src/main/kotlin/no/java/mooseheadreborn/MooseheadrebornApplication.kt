@@ -10,7 +10,7 @@ class MooseheadrebornApplication {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            Config.loadConfig(args)
+            Config.validateAndloadConfig(args)
             val application = SpringApplication(MooseheadrebornApplication::class.java)
             application.setAdditionalProfiles(SpringProfile.current().text)
             application.run(*args)
