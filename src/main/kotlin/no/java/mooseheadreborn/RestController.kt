@@ -5,12 +5,11 @@ import no.java.mooseheadreborn.dto.*
 import no.java.mooseheadreborn.dto.admin.*
 import no.java.mooseheadreborn.dto.enduser.*
 import no.java.mooseheadreborn.service.*
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.RestController
 
-@CrossOrigin(origins = arrayOf("http://localhost:3000"))
+@CrossOrigin(origins = arrayOf("http://localhost:3000","https://moosehead.javazone.no"))
 @RestController
 class RestController(
     private val workshopService: WorkshopService,

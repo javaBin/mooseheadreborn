@@ -51,7 +51,7 @@ class RegistrationServiceTest {
             )
         )
 
-        assertThat(registrationService.addRegistration(accessKey,workshopId,1).leftOrNull()).isEqualTo(RegistrationStatus.REGISTERED)
+        assertThat(registrationService.addRegistration(accessKey,workshopId,1).leftOrNull()?.registrationStatus).isEqualTo(RegistrationStatus.REGISTERED)
 
         val captor = slot<RegistrationRecord>()
         verify { registrationRepository.addRegistration(capture(captor)) }

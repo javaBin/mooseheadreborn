@@ -16,7 +16,8 @@ class WorkshopServiceTest {
 
     private val workshopService: WorkshopService = WorkshopService(
         workshopRepository = workshopRepository,
-        timeService = timeService
+        timeService = timeService,
+        adminService = mockk(relaxed = false)
     )
 
     @Test

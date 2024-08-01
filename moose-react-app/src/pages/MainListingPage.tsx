@@ -20,7 +20,6 @@ function MainListingPage() {
     return (
         <Container>
             <h1>Workshops</h1>
-            <p>My enviroment: {process.env.REACT_APP_MY_VARIABLE}</p>
             {workshopList.map((workshop) => <WorkshopDisplay key={workshop.id} workshop={workshop} displayLink={true}/>) }
         </Container>
     );
