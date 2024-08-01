@@ -1,16 +1,18 @@
 package no.java.mooseheadreborn.util
 
-import java.time.OffsetDateTime
+import java.time.*
 import java.time.format.*
 
 object DateConverter {
-    fun toOffset(dateString:String):OffsetDateTime? {
-        val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm")
-        return try {
-            OffsetDateTime.parse(dateString, dateTimeFormatter)
+    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
+    private val osloZone = ZoneId.of("Europe/Oslo")
 
-        } catch (e: DateTimeParseException) {
-            null
+    fun toOffset(dateString:String):OffsetDateTime? {
+        val localDate:LocalDateTime = try {
+            LocalDateTime.parse(dateString,dateTimeFormatter)
+        } catch (e: DateTimeException) {
+            return null
         }
+        return localDate.atZone(osloZone).toOffsetDateTime()
     }
 }

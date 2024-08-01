@@ -9,6 +9,7 @@ data class WorkshopDto(
     val id:String,
     val name:String,
     val workshopstatus:WorkshopStatus,
+    val workshopStatusText:String,
     val opensAt:String,
     val registerLimit:Int,
 ) {
@@ -18,12 +19,14 @@ data class WorkshopDto(
         fun toDto(workshopRecord: WorkshopRecord, now: Instant):WorkshopDto {
 
             val status:WorkshopStatus = toStatus(workshopRecord,now)
+            val opensAt = formatter.format(workshopRecord.registrationOpen)
             return WorkshopDto(
                 id = workshopRecord.id,
                 name = workshopRecord.name,
                 workshopstatus = status,
-                opensAt = formatter.format(workshopRecord.registrationOpen),
-                registerLimit = workshopRecord.registerLimit
+                opensAt = opensAt,
+                registerLimit = workshopRecord.registerLimit,
+                workshopStatusText = if (status == WorkshopStatus.NOT_OPEN) "${status.text} (Opens $opensAt)" else status.text
             )
         }
 

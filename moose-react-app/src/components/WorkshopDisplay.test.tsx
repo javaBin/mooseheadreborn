@@ -8,7 +8,8 @@ test('It should render workshop data',() => {
         workshopstatus: WorkshopStatus.OPEN,
         id: "workshop-id",
         opensAt: "July 22 at 09:34",
-        registerLimit: 1
+        registerLimit: 1,
+        workshopStatusText: "Dummy status",
     }
     render(<WorkshopDisplay workshop={workshop} displayLink={true}/>);
 

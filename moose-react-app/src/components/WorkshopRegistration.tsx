@@ -31,7 +31,9 @@ const WorkshopRegistration : React.FC<WorkshopRegistrationProps> = ({workshopInf
         addRegistrationToServer(addRegistationInput).then(addRegistrationOutput => {
             setRegistrationStatus(addRegistrationOutput.registrationStatus);
             setRegistrationId(addRegistrationOutput.registrationId);
-            setNumRegistered(numbPartSelected)
+            if (doSelectParticipants) {
+                setNumRegistered(numbPartSelected)
+            }
         }).catch(errorFromServer => setErrormessage(errorFromServer));
     };
     const onRegistrationCancelled:(registrationStatus:RegistrationStatus)=>void = (registrationStatus) => {

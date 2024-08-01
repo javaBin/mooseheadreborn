@@ -29,7 +29,8 @@ test('should be able to register',async () => {
             name: "Some workshop",
             workshopstatus: WorkshopStatus.OPEN,
             opensAt: "July 22 at 09:34",
-            registerLimit: 1
+            registerLimit: 1,
+            workshopStatusText: "dummy status"
         },
         registrationStatus: RegistrationStatus.NOT_REGISTERED,
         registrationStatusText: "Not registered",
@@ -60,7 +61,8 @@ test('should display info on not open workshop', () => {
            name: "Some workshop",
            workshopstatus: WorkshopStatus.NOT_OPEN,
            opensAt: "July 22 at 09:34",
-           registerLimit: 1
+           registerLimit: 1,
+           workshopStatusText: "dummy status"
        },
        registrationStatus: RegistrationStatus.NOT_REGISTERED,
        registrationStatusText: "Not registered",
@@ -78,7 +80,8 @@ test('should not display registration status closed', () => {
             name: "Some workshop",
             workshopstatus: WorkshopStatus.CLOSED,
             opensAt: "July 22 at 09:34",
-            registerLimit: 1
+            registerLimit: 1,
+            workshopStatusText: "dummy status"
         },
         registrationStatus: RegistrationStatus.NOT_REGISTERED,
         registrationStatusText: "Not registered",
@@ -100,7 +103,8 @@ test('should be able to cancel',() => {
             name: "Some workshop",
             workshopstatus: WorkshopStatus.OPEN,
             opensAt: "July 22 at 09:34",
-            registerLimit: 1
+            registerLimit: 1,
+            workshopStatusText: "dummy status"
         },
         registrationStatus: RegistrationStatus.REGISTERED,
         registrationStatusText: "registered",

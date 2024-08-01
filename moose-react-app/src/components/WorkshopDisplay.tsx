@@ -10,7 +10,7 @@ const WorkshopDisplay = (props: WorkshopDisplayProps) => {
     return (<div>
         {displayLink && <a href={"/workshop/" + workshop.id}><h2>{workshop.name}</h2></a>}
         {!displayLink && <h2>{workshop.name}</h2>}
-        <p>Status: {workshop.workshopstatus}</p>
+        <p>{workshop.workshopStatusText}</p>
 
 
     </div>);

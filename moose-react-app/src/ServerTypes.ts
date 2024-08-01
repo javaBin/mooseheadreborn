@@ -11,6 +11,7 @@ export interface WorkshopType {
     workshopstatus: WorkshopStatus;
     opensAt: string;
     registerLimit: number;
+    workshopStatusText:string;
 }
 
 export interface AddParticipantInput {
