@@ -1,4 +1,4 @@
-package no.java.mooseheadreborn.service
+package no.java.mooseheadreborn.repository
 
 import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.jooq.public_.Tables
@@ -7,22 +7,33 @@ import org.jooq.*
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
+interface RegistrationRepository {
+    fun addRegistration(rr: RegistrationRecord)
+    fun registrationListForWorkshop(workshopId: String): List<RegistrationRecord>
+    fun cancelRegistration(registrationId: String)
+    fun updateRegistrationStatus(registrationId: String, registrationStatus: RegistrationStatus)
+    fun registrationForId(registrationId: String): RegistrationRecord?
+    fun registationListByParticipant(participantId: String): List<RegistrationRecord>
+    fun allRegistrations(): List<RegistrationRecord>
+
+}
+
 @Repository
-class RegistrationRepository(
+class RegistrationRepositoryImpl(
     private val dslContext: DSLContext
-) {
-    fun addRegistration(rr:RegistrationRecord) {
+):RegistrationRepository {
+    override fun addRegistration(rr:RegistrationRecord) {
         dslContext.executeInsert(rr)
     }
 
-    fun registrationListForWorkshop(workshopId: String): List<RegistrationRecord> {
+    override fun registrationListForWorkshop(workshopId: String): List<RegistrationRecord> {
         return dslContext.selectFrom(Tables.REGISTRATION)
             .where(Tables.REGISTRATION.WORKSHOP.eq(workshopId))
             .forUpdate()
             .fetch()
     }
 
-    fun cancelRegistration(registrationId: String) {
+    override fun cancelRegistration(registrationId: String) {
         dslContext.update(Tables.REGISTRATION)
             .set(Tables.REGISTRATION.CANCELLED_AT, OffsetDateTime.now())
             .set(Tables.REGISTRATION.STATUS,RegistrationStatus.CANCELLED.name)
@@ -30,28 +41,28 @@ class RegistrationRepository(
             .execute()
     }
 
-    fun updateRegistrationStatus(registrationId: String,registrationStatus: RegistrationStatus) {
+    override fun updateRegistrationStatus(registrationId: String, registrationStatus: RegistrationStatus) {
         dslContext.update(Tables.REGISTRATION)
             .set(Tables.REGISTRATION.STATUS,registrationStatus.name)
             .where(Tables.REGISTRATION.ID.eq(registrationId))
             .execute()
     }
 
-    fun registrationForId(registrationId: String): RegistrationRecord? {
+    override fun registrationForId(registrationId: String): RegistrationRecord? {
         return dslContext
             .selectFrom(Tables.REGISTRATION)
             .where(Tables.REGISTRATION.ID.eq(registrationId))
             .fetchOne()
     }
 
-    fun registationListByParticipant(participantId:String):List<RegistrationRecord> {
+    override fun registationListByParticipant(participantId:String):List<RegistrationRecord> {
         return dslContext
             .selectFrom(Tables.REGISTRATION)
             .where(Tables.REGISTRATION.PARTICIPANT.eq(participantId))
             .fetch()
     }
 
-    fun allRegistrations():List<RegistrationRecord> {
+    override fun allRegistrations():List<RegistrationRecord> {
         return dslContext.selectFrom(Tables.REGISTRATION).fetch()
     }
 }

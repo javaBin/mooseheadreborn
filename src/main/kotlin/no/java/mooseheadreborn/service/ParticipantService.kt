@@ -2,8 +2,8 @@ package no.java.mooseheadreborn.service
 
 import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
-import no.java.mooseheadreborn.dto.enduser.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.*
+import no.java.mooseheadreborn.repository.*
 import no.java.mooseheadreborn.util.*
 import org.springframework.stereotype.Service
 import java.time.*
@@ -53,8 +53,7 @@ class ParticipantService(
 
         participantRepository.addParticipantRegistration(participantRegistrationRecord)
 
-        sendMailService.sendEmail(email,"Confirm email",
-            EmailTextGenerator.loadText(EmailTemplate.PARTICIPANT_CONFIRMATION, mapOf(EmailVariable.CONFIRM_EMAIL_LINK to EmailTextGenerator.emailConfirnmAddress(participantRegistrationRecord.registerToken))))
+        sendMailService.sendEmail(email,EmailTemplate.PARTICIPANT_CONFIRMATION, mapOf(EmailVariable.CONFIRM_EMAIL_LINK to EmailTextGenerator.emailConfirnmAddress(participantRegistrationRecord.registerToken)))
 
         return Either.Left(NoDataDto())
     }

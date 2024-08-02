@@ -5,16 +5,24 @@ import org.slf4j.*
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import no.java.mooseheadreborn.*
+import no.java.mooseheadreborn.util.*
 
 
-interface SendMailService {
-    fun sendEmail(to: String, subject: String, body: String)
+abstract class SendMailService {
+    fun sendEmail(to:String,emailTemplate: EmailTemplate,variableMap:Map<EmailVariable,String>) {
+        val body = EmailTextGenerator.loadText(emailTemplate, variableMap)
+        sendEmail(to, emailTemplate.subject, body)
+    }
+
+    protected abstract fun sendEmail(to: String, subject: String, body: String)
 }
+
+
 
 
 @Profile("dev")
 @Service
-class SendEmailServiceDummy:SendMailService {
+class SendEmailServiceDummy:SendMailService() {
     override fun sendEmail(to: String, subject: String, body: String) {
         logger.info("Sending email to $to ($subject) -> $body")
     }
@@ -27,7 +35,7 @@ class SendEmailServiceDummy:SendMailService {
 
 @Profile("prod")
 @Service
-class SendEmailServiceLIve:SendMailService {
+class SendEmailServiceLIve:SendMailService() {
     override fun sendEmail(to: String, subject: String, body: String) {
         logger.info("Sending prod email to $to ($subject) -> $body")
         val sendGrid = SendGrid(ConfigVariable.SENDGRID_KEY.readValue())

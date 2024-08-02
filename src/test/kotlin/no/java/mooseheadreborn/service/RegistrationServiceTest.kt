@@ -3,15 +3,16 @@ package no.java.mooseheadreborn.service
 import io.mockk.*
 import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.*
+import no.java.mooseheadreborn.repository.*
 import org.assertj.core.api.Assertions.*
 import org.junit.Test
 import java.time.*
 import java.util.UUID
 
 class RegistrationServiceTest {
-    private val workshopRepository:WorkshopRepository = mockk(relaxed = false)
-    private val participantRepository:ParticipantRepository = mockk(relaxed = false)
-    private val registrationRepository:RegistrationRepository = mockk(relaxed = true)
+    private val workshopRepository: WorkshopRepository = mockk(relaxed = false)
+    private val participantRepository: ParticipantRepository = mockk(relaxed = false)
+    private val registrationRepository: RegistrationRepository = mockk(relaxed = true)
 
 
     private val registrationService: RegistrationService = RegistrationService(

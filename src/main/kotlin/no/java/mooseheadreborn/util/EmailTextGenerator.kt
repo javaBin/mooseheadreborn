@@ -2,10 +2,10 @@ package no.java.mooseheadreborn.util
 
 import no.java.mooseheadreborn.*
 
-enum class EmailTemplate(val templatePath:String) {
-    REGISTER_CONFIRMATION("templates/registrationConfirmation.html"),
-    REGISTER_CONFIRMATION_WAITING("templates/waitingConfirmation.html"),
-    PARTICIPANT_CONFIRMATION("templates/confirmEmail.html"),
+enum class EmailTemplate(val templatePath:String,val subject:String) {
+    REGISTER_CONFIRMATION("templates/registrationConfirmation.html","Workshop confirmation"),
+    REGISTER_CONFIRMATION_WAITING("templates/waitingConfirmation.html","Workshop confirmation"),
+    PARTICIPANT_CONFIRMATION("templates/confirmEmail.html","Confirm email"),
 }
 
 enum class EmailVariable {

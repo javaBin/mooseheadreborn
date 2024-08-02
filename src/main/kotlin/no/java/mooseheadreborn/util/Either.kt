@@ -15,6 +15,11 @@ sealed class Either<out L, out R> {
         is Right -> null
     }
 
+    fun leftOrError():L = when (this) {
+        is Left -> value
+        is Right -> throw RuntimeException("Value is not left")
+    }
+
     fun rightOrNull():R? = when (this) {
         is Left -> null
         is Right -> value

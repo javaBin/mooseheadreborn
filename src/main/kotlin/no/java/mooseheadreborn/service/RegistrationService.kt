@@ -4,6 +4,7 @@ import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
 import no.java.mooseheadreborn.dto.enduser.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.*
+import no.java.mooseheadreborn.repository.*
 import no.java.mooseheadreborn.util.*
 import org.springframework.stereotype.Service
 import java.time.*
@@ -45,13 +46,13 @@ class RegistrationService(
         )
         registrationRepository.addRegistration(rr)
 
-        sendMailService.sendEmail(participant.email,"Workshop confirmation",
-            EmailTextGenerator.loadText(
-                template = if (registrationStatus == RegistrationStatus.WAITING) EmailTemplate.REGISTER_CONFIRMATION_WAITING else EmailTemplate.REGISTER_CONFIRMATION,
-                variableMap = mapOf(
+        sendMailService.sendEmail(
+            to = participant.email,
+            emailTemplate = if (registrationStatus == RegistrationStatus.WAITING) EmailTemplate.REGISTER_CONFIRMATION_WAITING else EmailTemplate.REGISTER_CONFIRMATION,
+            variableMap = mapOf(
                     EmailVariable.CANCEL_LINK to EmailTextGenerator.cancelLinkAddress(rr.id),
                     EmailVariable.WORKSHOP_NAME to workshop.name
-                ))
+                )
         )
 
         return Either.Left(AddRegistrationResultDto(
@@ -86,13 +87,11 @@ class RegistrationService(
                 if (participant != null) {
                     registrationRepository.updateRegistrationStatus(registration.id, RegistrationStatus.REGISTERED)
                     sendMailService.sendEmail(
-                        participant.email, "Workshop confirmation",
-                        EmailTextGenerator.loadText(
-                            EmailTemplate.REGISTER_CONFIRMATION,
-                            mapOf(
-                                EmailVariable.CANCEL_LINK to EmailTextGenerator.cancelLinkAddress(registration.id),
-                                EmailVariable.WORKSHOP_NAME to workshop.name
-                                )
+                        to = participant.email,
+                        emailTemplate = EmailTemplate.REGISTER_CONFIRMATION,
+                        variableMap = mapOf(
+                            EmailVariable.CANCEL_LINK to EmailTextGenerator.cancelLinkAddress(registration.id),
+                            EmailVariable.WORKSHOP_NAME to workshop.name
                         )
                     )
                 }

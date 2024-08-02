@@ -1,4 +1,4 @@
-package no.java.mooseheadreborn.service
+package no.java.mooseheadreborn.repository
 
 import no.java.mooseheadreborn.jooq.public_.Tables
 import org.jooq.*

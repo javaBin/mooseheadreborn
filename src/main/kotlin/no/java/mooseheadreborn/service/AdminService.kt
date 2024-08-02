@@ -5,6 +5,7 @@ import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
 import no.java.mooseheadreborn.dto.admin.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.AdminKeysRecord
+import no.java.mooseheadreborn.repository.*
 import no.java.mooseheadreborn.util.*
 import org.springframework.stereotype.Service
 import java.time.*

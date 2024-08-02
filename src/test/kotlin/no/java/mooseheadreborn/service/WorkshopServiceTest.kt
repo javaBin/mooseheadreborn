@@ -4,14 +4,14 @@ import io.mockk.mockk
 import io.mockk.every
 import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.WorkshopRecord
-import org.assertj.core.api.Assertions
+import no.java.mooseheadreborn.repository.*
 import org.assertj.core.api.Assertions.*
 import org.junit.Test
 import java.time.*
 import java.util.UUID
 
 class WorkshopServiceTest {
-    private val workshopRepository:WorkshopRepository = mockk(relaxed = false)
+    private val workshopRepository: WorkshopRepository = mockk(relaxed = false)
     private val timeService:MyTimeService = mockk(relaxed = false)
 
     private val workshopService: WorkshopService = WorkshopService(

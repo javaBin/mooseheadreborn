@@ -3,6 +3,7 @@ package no.java.mooseheadreborn.service
 import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.WorkshopRecord
+import no.java.mooseheadreborn.repository.*
 import no.java.mooseheadreborn.util.*
 import org.springframework.stereotype.Service
 import java.time.Instant
