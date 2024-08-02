@@ -1,4 +1,4 @@
-import {RegistrationStatus, WorkshopInfoFromServer} from "../ServerTypes";
+import {RegistrationStatus, WorkshopInfoFromServer, WorkshopStatus} from "../ServerTypes";
 import RegisterParticipant from "./RegisterParticipant";
 import WorkshopDisplay from "./WorkshopDisplay";
 import {useEffect, useState} from "react";
@@ -23,13 +23,15 @@ const WorkshopRegistrationComponent: React.FC<WorkshopInfoProps> = ({workshopId,
         );
     }, [workshopId, accessToken]);
 
+    const openForRegistration = ((workshopInfoFromServer?.workshop?.workshopstatus === WorkshopStatus.OPEN || workshopInfoFromServer?.workshop?.workshopstatus === WorkshopStatus.FULL));
+
     return (<div>
         <h1>Registration</h1>
         {errormessage && <Alert variant={"danger"}>{errormessage}</Alert>}
         {workshopInfoFromServer?.workshop && <WorkshopDisplay workshop={workshopInfoFromServer.workshop} displayLink={false}/>}
 
-        {(workshopInfoFromServer && workshopInfoFromServer.registrationStatus === RegistrationStatus.NOT_LOGGED_IN) && <RegisterParticipant/>}
-        {(accessToken !== null && workshopInfoFromServer && workshopInfoFromServer.registrationStatus !== RegistrationStatus.NOT_LOGGED_IN) && <WorkshopRegistration workshopInfoFromServer={workshopInfoFromServer} accessToken={accessToken}/>}
+        {(openForRegistration && workshopInfoFromServer && workshopInfoFromServer.registrationStatus === RegistrationStatus.NOT_LOGGED_IN) && <RegisterParticipant/>}
+        {(openForRegistration && accessToken !== null && workshopInfoFromServer && workshopInfoFromServer.registrationStatus !== RegistrationStatus.NOT_LOGGED_IN) && <WorkshopRegistration workshopInfoFromServer={workshopInfoFromServer} accessToken={accessToken}/>}
     </div>);
 }
 
