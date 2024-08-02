@@ -22,7 +22,7 @@ const registerParticipantToserver = (addParticipantInput:AddParticipantInput):Pr
             })
             //  .then(errormessage => resolve(errormessage))
             .catch(error => {
-                resolve(error);
+                resolve(error.message);
             });
     });
 }

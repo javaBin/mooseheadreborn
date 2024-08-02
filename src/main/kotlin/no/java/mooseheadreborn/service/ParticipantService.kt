@@ -33,14 +33,17 @@ class ParticipantService(
             null
         ))
 
+
+        /*
         if (participant.activatedAt != null) {
+            // Send nytt
             return Either.Right("Participant is already activated")
-        }
+        }*/
 
-        val exsisting = participantRepository.participantRegistrationByParticipantId(participant.id)
+        val exsistingList:List<ParticipantRegistrationRecord> = participantRepository.participantRegistrationByParticipantId(participant.id)
 
-        if (exsisting.isNotEmpty()) {
-            return Either.Right("Participant is already registered")
+        if (exsistingList.any { it.usedAt == null}) {
+            return Either.Right("You are already registered. Check your mail and click the activation link")
         }
 
         val participantRegistrationRecord = ParticipantRegistrationRecord(
@@ -59,21 +62,32 @@ class ParticipantService(
     }
 
     fun activateParticipant(registerKey:String):Either<UserDto,String> {
-        val pr = participantRepository.participantRegistrationByRegisterKey(registerKey)?: return Either.Right("Unknown key")
+        val pr:ParticipantRegistrationRecord = participantRepository.participantRegistrationByRegisterKey(registerKey)?: return Either.Right("Unknown key")
+        if (pr.usedAt != null) {
+            return Either.Right("Unknown key")
+        }
 
-      val particiantRecord:ParticiantRecord = participantRepository.participantById(pr.particiapantId)?:return Either.Right("Unknown access key")
+        val particiantRecord:ParticiantRecord = participantRepository.participantById(pr.particiapantId)?:return Either.Right("Unknown access key")
+
+        participantRepository.setParticipantRegistrationUsed(pr.id)
+
+
+        val accessToken = if (particiantRecord.activatedAt != null) {
+          val newAccessToken = UUID.randomUUID().toString()
+          participantRepository.updateAccessKey(particiantRecord.id,newAccessToken)
+          newAccessToken
+        } else {
+          participantRepository.setActive(particiantRecord.id)
+          particiantRecord.accessKey
+        }
         val userDto = UserDto(
-            accessToken = particiantRecord.accessKey,
+            accessToken = accessToken,
             name = particiantRecord.name,
             email = particiantRecord.email,
             userType = UserType.USER
         )
-      if (particiantRecord.activatedAt != null) {
-          return Either.Right("Participant is already activated")
-          //return Either.Left(userDto)
-      }
-      participantRepository.setActive(particiantRecord.id)
-      return Either.Left(userDto)
+
+        return Either.Left(userDto)
     }
 
     fun userFromAccessToken(accessToken:String):UserDto {

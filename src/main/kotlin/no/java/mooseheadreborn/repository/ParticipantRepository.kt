@@ -19,6 +19,8 @@ interface ParticipantRepository {
     fun participantById(participantId: String): ParticiantRecord?
     fun setActive(id: String)
     fun allParticipants(): List<ParticiantRecord>
+    fun updateAccessKey(id:String,accessKey: String)
+    fun setParticipantRegistrationUsed(participantRegistrationRecordId:String)
 
 }
 
@@ -77,6 +79,21 @@ class ParticipantRepositoryImpl (
 
     override fun allParticipants(): List<ParticiantRecord> {
         return dslContext.selectFrom(Tables.PARTICIANT).fetch()
+    }
+
+    override fun updateAccessKey(id: String, accessKey: String) {
+        dslContext.update(Tables.PARTICIANT)
+            .set(Particiant.PARTICIANT.ACCESS_KEY, accessKey)
+            .where(Particiant.PARTICIANT.ID.eq(id))
+            .execute()
+    }
+
+    override fun setParticipantRegistrationUsed(participantRegistrationRecordId: String) {
+        dslContext
+            .update(Tables.PARTICIPANT_REGISTRATION)
+            .set(ParticipantRegistration.PARTICIPANT_REGISTRATION.USED_AT, OffsetDateTime.now())
+            .where(ParticipantRegistration.PARTICIPANT_REGISTRATION.ID.eq(participantRegistrationRecordId))
+            .execute()
     }
 
 
