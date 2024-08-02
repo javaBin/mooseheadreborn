@@ -33,4 +33,14 @@ class ParticipantRepositoryMock:ParticipantRepository {
     }
 
     override fun allParticipants(): List<ParticiantRecord> = participantStore
+
+    override fun updateAccessKey(id: String, accessKey: String) {
+        val particiantRecord:ParticiantRecord = participantStore.firstOrNull { it.id == id }?:return
+        particiantRecord.accessKey = accessKey
+    }
+
+    override fun setParticipantRegistrationUsed(participantRegistrationRecordId: String) {
+        val participantRegistrationRecord:ParticipantRegistrationRecord = partRegistrationStore.firstOrNull { it.id == participantRegistrationRecordId }?:return
+        participantRegistrationRecord.usedAt = OffsetDateTime.now()
+    }
 }
