@@ -12,6 +12,7 @@ import ActivateParticipantPage from "./pages/ActivateParticipantPage";
 import RegistrationViewPage from "./pages/RegistrationViewPage";
 import TopNavbarComponent from "./components/TopNavbarComponent";
 import {AppContextProvider} from "./context/AppContextProvider";
+import AdminSummaryPage from "./pages/AdminSummaryPage";
 
 function App() {
   return (
@@ -21,10 +22,11 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<MainListingPage/>} />
-                <Route path="/workshop/:workshopId" element={<WorkshopRegistryPage/>} />
-                <Route path="/activate/:registerKey" element={<ActivateParticipantPage/>} />
-                <Route path="/registration/:registrationId" element={<RegistrationViewPage/>} />
-            </Routes>
+                    <Route path="/workshop/:workshopId" element={<WorkshopRegistryPage/>} />
+                    <Route path="/activate/:registerKey" element={<ActivateParticipantPage/>} />
+                    <Route path="/registration/:registrationId" element={<RegistrationViewPage/>} />
+                    <Route path="/admin" element={<AdminSummaryPage/>} />
+                </Routes>
            </BrowserRouter>
         </AppContextProvider>
     </div>

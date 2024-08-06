@@ -74,3 +74,29 @@ export const defaultUserLogin:UserLogin = {
     email: null,
     userType:UserType.ANONYMOUS
 }
+
+export interface AdminWorkshopRegistrationType {
+    id:string;
+    status:RegistrationStatus;
+    name:string;
+    email:string;
+    numSpots:number;
+    participantId:string;
+    registeredAt:string;
+}
+
+export interface AdminWorkshopType {
+   id: string;
+    name: string;
+    workshopType:string;
+    workshopstatus: WorkshopStatus;
+    opensAt: string;
+    registerLimit: number;
+    capacity: number;
+    seatsTaken: number;
+    registrationList: AdminWorkshopRegistrationType[];
+}
+
+export interface AdminWorkshopSummaryType {
+    workshopList: AdminWorkshopType[];
+}
