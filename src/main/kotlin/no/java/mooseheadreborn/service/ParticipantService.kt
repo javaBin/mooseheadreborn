@@ -12,6 +12,7 @@ import java.util.UUID
 @Service
 class ParticipantService(
     private val participantRepository: ParticipantRepository,
+    private val adminService: AdminService,
     private val sendMailService: SendMailService,
 ) {
     private fun isValidEmail(email: String):Boolean {
@@ -99,8 +100,15 @@ class ParticipantService(
                 email = participant.email,
                 userType = UserType.USER
             )
+        } else if (adminService.keyIsValid(accessToken)) {
+            return UserDto(
+                accessToken = accessToken,
+                name = "ADMIN",
+                email = "program@java.no",
+                userType = UserType.ADMIN
+            )
         } else {
-            UserDto(
+             UserDto(
                 accessToken = null,
                 name = null,
                 email = null,

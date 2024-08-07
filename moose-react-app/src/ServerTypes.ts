@@ -100,3 +100,7 @@ export interface AdminWorkshopType {
 export interface AdminWorkshopSummaryType {
     workshopList: AdminWorkshopType[];
 }
+
+export interface AdminLoginInput {
+    password:string;
+}

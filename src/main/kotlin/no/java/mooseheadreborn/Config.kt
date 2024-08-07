@@ -13,9 +13,11 @@ enum class ConfigVariable(val defaultValue: String) {
     POSTGRES_URL("jdbc:postgresql://localhost:5432/mooserblocal"),
     POSTGRES_USER("localdevuser"),
     POSTGRES_PASSWORD("localdevuser"),
+    ADMIN_LOGIN_DURATION_MINUTES("480"),
     ;
 
     fun readValue():String = Config.getConfigValue(this)
+    fun longValue():Long = readValue().toLong()
 }
 
 object Config {

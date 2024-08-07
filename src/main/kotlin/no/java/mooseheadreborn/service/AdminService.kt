@@ -31,8 +31,9 @@ class AdminService(
     }
 
     fun keyIsValid(key:String):Boolean {
-        val adminRecord:AdminKeysRecord? = adminRepository.readKey(key)
-        return (adminRecord != null)
+        val adminRecord:AdminKeysRecord = adminRepository.readKey(key)?:return false
+
+        return (adminRecord.created.plusMinutes(ConfigVariable.ADMIN_LOGIN_DURATION_MINUTES.longValue()).isAfter(OffsetDateTime.now()))
     }
 
     fun allRegistration(key:String):Either<AdminWorkshopSummaryDto,String> {

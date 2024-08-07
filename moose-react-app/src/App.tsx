@@ -13,6 +13,7 @@ import RegistrationViewPage from "./pages/RegistrationViewPage";
 import TopNavbarComponent from "./components/TopNavbarComponent";
 import {AppContextProvider} from "./context/AppContextProvider";
 import AdminSummaryPage from "./pages/AdminSummaryPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/activate/:registerKey" element={<ActivateParticipantPage/>} />
                     <Route path="/registration/:registrationId" element={<RegistrationViewPage/>} />
                     <Route path="/admin" element={<AdminSummaryPage/>} />
+                    <Route path="/adminlogin" element={<AdminLoginPage/>} />
                 </Routes>
            </BrowserRouter>
         </AppContextProvider>
