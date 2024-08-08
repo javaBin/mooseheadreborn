@@ -14,6 +14,7 @@ enum class ConfigVariable(val defaultValue: String) {
     POSTGRES_USER("localdevuser"),
     POSTGRES_PASSWORD("localdevuser"),
     ADMIN_LOGIN_DURATION_MINUTES("480"),
+    MORESLEEP_PROGRAM_LOCATION("https://sleepingpill.javazone.no/public/allSessions/javazone_2024"),
     ;
 
     fun readValue():String = Config.getConfigValue(this)

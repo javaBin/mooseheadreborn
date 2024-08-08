@@ -37,6 +37,8 @@ class RegistrationServiceTest {
             30,
             1,
             OffsetDateTime.now().minusDays(1),
+            null,
+            null,
             null
         ))
 
@@ -80,6 +82,8 @@ class RegistrationServiceTest {
             30,
             1,
             OffsetDateTime.now().plusDays(1),
+            null,
+            null,
             null
         ))
 

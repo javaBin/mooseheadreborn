@@ -5,6 +5,7 @@ import org.jooq.SQLDialect
 import org.jooq.impl.DefaultDSLContext
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.*
+import org.springframework.web.client.RestTemplate
 import javax.sql.DataSource
 
 @Configuration
@@ -22,5 +23,10 @@ class JooqConfig {
     @Bean
     fun dslContext(dataSource: DataSource): DSLContext {
         return DefaultDSLContext(dataSource, SQLDialect.POSTGRES)
+    }
+
+    @Bean
+    fun restTemplate(): RestTemplate {
+        return RestTemplate()
     }
 }

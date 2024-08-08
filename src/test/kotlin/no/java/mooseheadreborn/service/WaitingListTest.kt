@@ -37,7 +37,9 @@ class WaitingListTest {
             3,
             3,
             OffsetDateTime.now().minusDays(1),
-            OffsetDateTime.now().plusDays(10)
+            OffsetDateTime.now().plusDays(10),
+            null,
+            null,
         ))
 
         val participantOne = ParticiantRecord(

@@ -2,12 +2,12 @@ package no.java.mooseheadreborn.service
 
 import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
+import no.java.mooseheadreborn.dto.admin.*
 import no.java.mooseheadreborn.jooq.public_.tables.records.WorkshopRecord
 import no.java.mooseheadreborn.repository.*
 import no.java.mooseheadreborn.util.*
 import org.springframework.stereotype.Service
-import java.time.Instant
-import java.time.OffsetDateTime
+import java.time.*
 import java.util.UUID
 
 @Service
@@ -15,6 +15,7 @@ class WorkshopService(
     private val workshopRepository: WorkshopRepository,
     private val timeService: MyTimeService,
     private val adminService: AdminService,
+    private val readProgramService: ReadProgramService,
 ) {
     fun allWorkshops(): List<WorkshopDto> {
         val workshopRecords = workshopRepository.allWorkshops()
@@ -59,9 +60,63 @@ class WorkshopService(
             addWorkshopDto.capacity,
             workshopType.registerLimit,
             registrationOpens,
-            changesLocked
+            changesLocked,
+            null,
+            null
         )
         workshopRepository.addWorkshop(workshopRecord)
         return Either.Left(ResultWithId(id))
     }
+
+    private fun titleToId(title:String):String {
+        val res = StringBuilder()
+        for (char in title.lowercase()) {
+            if (char < 'a' || char > 'z') {
+                continue
+            }
+            res.append(char)
+            if (res.length >= 15) {
+                break
+            }
+        }
+        return res.toString()
+    }
+
+    fun createWorkshopsFromMoosehead(moresleepCreateWorkshopsDto:MoresleepCreateWorkshopsDto): String? {
+        if (!adminService.keyIsValid(moresleepCreateWorkshopsDto.accessToken)) {
+            return "No access"
+        }
+        val moresleepProgram = readProgramService.fetchProgram() ?: return "Could not fetch program from moresleep"
+        val opens:OffsetDateTime =  DateConverter.toOffset(moresleepCreateWorkshopsDto.opensAt)?:return "Invalid date ${moresleepCreateWorkshopsDto.opensAt}"
+        val zone = ZoneId.of("Europe/Oslo")
+        for (moresleepSession in moresleepProgram.sessions) {
+            if (moresleepSession.format != "workshop") {
+                continue
+            }
+            val id = titleToId(moresleepSession.title)
+
+            if (workshopRepository.workshopFromId(id) != null) {
+                continue
+            }
+
+            val startTime:OffsetDateTime? = moresleepSession.startTime?.let { LocalDateTime.parse(it).atZone(zone).toOffsetDateTime() }
+            val endTime:OffsetDateTime? = moresleepSession.endTime?.let { LocalDateTime.parse(it).atZone(zone).toOffsetDateTime() }
+
+            val workshopRecord = WorkshopRecord(
+                id,
+                moresleepSession.title,
+                WorkshopType.JZ.name,
+                moresleepCreateWorkshopsDto.capacity,
+                1,
+                opens,
+                null,
+                startTime,
+                endTime
+            )
+            workshopRepository.addWorkshop(workshopRecord)
+        }
+        return null;
+    }
+
+
 }

@@ -4,6 +4,7 @@ import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
 import no.java.mooseheadreborn.dto.admin.*
 import no.java.mooseheadreborn.dto.enduser.*
+import no.java.mooseheadreborn.dto.moresleep.*
 import no.java.mooseheadreborn.service.*
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
@@ -21,6 +22,7 @@ class RestController(
     fun hello(): ConfigDto {
         return ConfigDto()
     }
+
 
     @GetMapping("/api/workshopList")
     fun allWorkshops() = workshopService.allWorkshops()
@@ -66,6 +68,15 @@ class RestController(
             left = { resultWithId -> ResponseEntity.ok(resultWithId) },
             right = { errormessage -> throw BadRequestException(errormessage)}
         )
+    }
+
+    @PostMapping("/api/worksopMoresleep")
+    fun readAddWorksopsFromMoresleep(@RequestBody moresleepCreateWorkshopsDto: MoresleepCreateWorkshopsDto):ResponseEntity<NoDataDto> {
+        val errormessage = workshopService.createWorkshopsFromMoosehead(moresleepCreateWorkshopsDto)
+        if (errormessage != null) {
+            throw BadRequestException(errormessage)
+        }
+        return ResponseEntity.ok(NoDataDto())
     }
 
     @PostMapping("/api/registerParticipant")
