@@ -5,6 +5,8 @@ export enum WorkshopStatus {
     CLOSED = "CLOSED"
 }
 
+
+
 export interface WorkshopType {
     id: string;
     name: string;
