@@ -83,14 +83,14 @@ const WorkshopRegistration : React.FC<WorkshopRegistrationProps> = ({workshopInf
                 {doCheckConfirm && <div>
                     <Form.Group className="mb-3">
                         <Form.Check type="checkbox" label="I am aware that I need to have a valid JavaZone ticket in order to enter the workshop and that I will need to show up at Oslo Spektrum since it is not possible to follow the workshop digitally."
-                            ref={confirmOneRef}/>
+                            ref={confirmOneRef} data-testid="confirmCheckboxOne"/>
                         {displayNotConfirmedErrorOne && <Form.Control.Feedback type="invalid" style={{ display: 'block' }}>
                             You need to confirm by clicking the checkbox
                         </Form.Control.Feedback>}
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Check type="checkbox" label="I acknowledge that, since some of the workshops are happening in parallell, it is my responsibility to make sure that I do not register for overlapping workshops - in which case the organizers have a right to cancel my registration for one or more of the workshops."
-                                    ref={confirmTwoRef}/>
+                                    ref={confirmTwoRef} data-testid="confirmCheckboxTwo"/>
                         {displayNotConfirmedErrorTwo && <Form.Control.Feedback type="invalid" style={{ display: 'block' }}>
                             You need to confirm by clicking the checkbox
                         </Form.Control.Feedback>}

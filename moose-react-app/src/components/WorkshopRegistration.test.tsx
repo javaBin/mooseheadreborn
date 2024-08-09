@@ -38,8 +38,19 @@ test('should be able to register',async () => {
         numRegistered: null,
     }
     render(<WorkshopRegistration workshopInfoFromServer={infoFromServer} accessToken={accessToken}/>);
+
+    const checkBoxOne = screen.getByTestId("confirmCheckboxOne");
+    expect(checkBoxOne).toBeInTheDocument();
+
+    const checkBoxTwo = screen.getByTestId("confirmCheckboxTwo");
+    expect(checkBoxTwo).toBeInTheDocument();
+
+
     const registerButton = screen.getByRole("button");
     expect(registerButton).toBeInTheDocument();
+
+    user.click(checkBoxOne);
+    user.click(checkBoxTwo);
 
     user.click(registerButton);
 
@@ -50,6 +61,44 @@ test('should be able to register',async () => {
         workshopId:workshopId,
         numParticipants:1
     });
+
+});
+
+test("should get error if not confirming", async () => {
+    const accessToken = "myAccessToken";
+    const workshopId = "workshopId";
+
+    const infoFromServer:WorkshopInfoFromServer = {
+        workshop: {
+            id: workshopId,
+            name: "Some workshop",
+            workshopstatus: WorkshopStatus.OPEN,
+            opensAt: "July 22 at 09:34",
+            registerLimit: 1,
+            workshopStatusText: "dummy status"
+        },
+        registrationStatus: RegistrationStatus.NOT_REGISTERED,
+        registrationStatusText: "Not registered",
+        registrationId: null,
+        numRegistered: null,
+    }
+    render(<WorkshopRegistration workshopInfoFromServer={infoFromServer} accessToken={accessToken}/>);
+
+
+    const checkBoxTwo = screen.getByTestId("confirmCheckboxTwo");
+    expect(checkBoxTwo).toBeInTheDocument();
+
+
+    const registerButton = screen.getByRole("button");
+    expect(registerButton).toBeInTheDocument();
+
+    user.click(checkBoxTwo);
+
+    user.click(registerButton);
+
+    const errorText = await screen.findByText("You need to confirm by clicking the checkbox");
+    expect(errorText).toBeInTheDocument();
+
 
 });
 
