@@ -12,6 +12,7 @@ enum class EmailVariable {
     CANCEL_LINK,
     CONFIRM_EMAIL_LINK,
     WORKSHOP_NAME,
+    WORKSHOP_TIME_TEXT,
 }
 
 object EmailTextGenerator {

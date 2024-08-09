@@ -8,6 +8,7 @@ import no.java.mooseheadreborn.repository.*
 import no.java.mooseheadreborn.util.*
 import org.springframework.stereotype.Service
 import java.time.*
+import java.time.format.*
 import java.util.UUID
 
 @Service
@@ -18,6 +19,8 @@ class RegistrationService(
     private val timeService: MyTimeService,
     private val sendMailService:SendMailService,
 ) {
+    private val formatter = DateTimeFormatter.ofPattern("LLLL dd' at 'HH:mm")
+
     fun addRegistration(accessToken:String,workshopId:String,numParticipants:Int):Either<AddRegistrationResultDto,String> {
         if (numParticipants < 1) {
             return Either.Right("Invalid number of participants")
@@ -46,12 +49,15 @@ class RegistrationService(
         )
         registrationRepository.addRegistration(rr)
 
+
+
         sendMailService.sendEmail(
             to = participant.email,
             emailTemplate = if (registrationStatus == RegistrationStatus.WAITING) EmailTemplate.REGISTER_CONFIRMATION_WAITING else EmailTemplate.REGISTER_CONFIRMATION,
             variableMap = mapOf(
                     EmailVariable.CANCEL_LINK to EmailTextGenerator.cancelLinkAddress(rr.id),
-                    EmailVariable.WORKSHOP_NAME to workshop.name
+                    EmailVariable.WORKSHOP_NAME to workshop.name,
+                    EmailVariable.WORKSHOP_TIME_TEXT to workshopStartText(workshop.starttime)
                 )
         )
 
@@ -59,6 +65,15 @@ class RegistrationService(
             registrationStatus = registrationStatus,
             registrationId = rr.id
         ))
+
+    }
+
+    private fun workshopStartText(starttime:OffsetDateTime?):String {
+        if (starttime == null) {
+            return ""
+        }
+        val formattedStartDate = starttime.format(formatter)
+        return " The workshop starts $formattedStartDate."
 
     }
 
@@ -91,7 +106,8 @@ class RegistrationService(
                         emailTemplate = EmailTemplate.REGISTER_CONFIRMATION,
                         variableMap = mapOf(
                             EmailVariable.CANCEL_LINK to EmailTextGenerator.cancelLinkAddress(registration.id),
-                            EmailVariable.WORKSHOP_NAME to workshop.name
+                            EmailVariable.WORKSHOP_NAME to workshop.name,
+                            EmailVariable.WORKSHOP_TIME_TEXT to workshopStartText(workshop.starttime)
                         )
                     )
                 }
