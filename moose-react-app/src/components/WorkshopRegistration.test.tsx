@@ -1,6 +1,12 @@
 import {render, screen} from "@testing-library/react";
 import user from "@testing-library/user-event";
-import {AddRegistrationInput, RegistrationStatus, WorkshopInfoFromServer, WorkshopStatus} from "../ServerTypes";
+import {
+    AddRegistrationInput,
+    RegistrationStatus,
+    WorkshopInfoFromServer,
+    WorkshopServerType,
+    WorkshopStatus
+} from "../ServerTypes";
 import WorkshopRegistration from "./WorkshopRegistration";
 
 let givenInput: AddRegistrationInput|null = null;
@@ -30,7 +36,8 @@ test('should be able to register',async () => {
             workshopstatus: WorkshopStatus.OPEN,
             opensAt: "July 22 at 09:34",
             registerLimit: 1,
-            workshopStatusText: "dummy status"
+            workshopStatusText: "dummy status",
+            workshopType: WorkshopServerType.JZ,
         },
         registrationStatus: RegistrationStatus.NOT_REGISTERED,
         registrationStatusText: "Not registered",
@@ -75,7 +82,8 @@ test("should get error if not confirming", async () => {
             workshopstatus: WorkshopStatus.OPEN,
             opensAt: "July 22 at 09:34",
             registerLimit: 1,
-            workshopStatusText: "dummy status"
+            workshopStatusText: "dummy status",
+            workshopType: WorkshopServerType.JZ
         },
         registrationStatus: RegistrationStatus.NOT_REGISTERED,
         registrationStatusText: "Not registered",
@@ -111,7 +119,8 @@ test('should display info on not open workshop', () => {
            workshopstatus: WorkshopStatus.NOT_OPEN,
            opensAt: "July 22 at 09:34",
            registerLimit: 1,
-           workshopStatusText: "dummy status"
+           workshopStatusText: "dummy status",
+           workshopType: WorkshopServerType.JZ,
        },
        registrationStatus: RegistrationStatus.NOT_REGISTERED,
        registrationStatusText: "Not registered",
@@ -130,7 +139,8 @@ test('should not display registration status closed', () => {
             workshopstatus: WorkshopStatus.CLOSED,
             opensAt: "July 22 at 09:34",
             registerLimit: 1,
-            workshopStatusText: "dummy status"
+            workshopStatusText: "dummy status",
+            workshopType: WorkshopServerType.JZ,
         },
         registrationStatus: RegistrationStatus.NOT_REGISTERED,
         registrationStatusText: "Not registered",
@@ -153,7 +163,8 @@ test('should be able to cancel',() => {
             workshopstatus: WorkshopStatus.OPEN,
             opensAt: "July 22 at 09:34",
             registerLimit: 1,
-            workshopStatusText: "dummy status"
+            workshopStatusText: "dummy status",
+            workshopType: WorkshopServerType.JZ,
         },
         registrationStatus: RegistrationStatus.REGISTERED,
         registrationStatusText: "registered",

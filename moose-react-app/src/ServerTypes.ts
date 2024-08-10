@@ -5,7 +5,10 @@ export enum WorkshopStatus {
     CLOSED = "CLOSED"
 }
 
-
+export enum WorkshopServerType {
+    JZ = "JZ",
+    KIDS = "KIDS"
+}
 
 export interface WorkshopType {
     id: string;
@@ -14,6 +17,7 @@ export interface WorkshopType {
     opensAt: string;
     registerLimit: number;
     workshopStatusText:string;
+    workshopType:WorkshopServerType;
 }
 
 export interface AddParticipantInput {

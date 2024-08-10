@@ -18,7 +18,7 @@ const TopNavbarComponent = () => {
     }
     return (<Navbar bg="primary" data-bs-theme="dark">
             <Container>
-                <Navbar.Brand href="/">JavaZone Kids Workshop registration</Navbar.Brand>
+                <Navbar.Brand href="/">JavaZone Workshop registration</Navbar.Brand>
                 {(userLogin?.userType === UserType.USER || userLogin?.userType === UserType.ADMIN) && <Nav>
                     <Navbar.Text>{userLogin.name} ({userLogin.email})</Navbar.Text>
                     <Button variant={"dark"} onClick={onForgetClick}>Forget me</Button>

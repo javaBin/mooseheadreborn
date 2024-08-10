@@ -12,6 +12,8 @@ data class WorkshopDto(
     val workshopStatusText:String,
     val opensAt:String,
     val registerLimit:Int,
+    val workshopType: WorkshopType
+
 ) {
 
     companion object {
@@ -23,6 +25,7 @@ data class WorkshopDto(
             return WorkshopDto(
                 id = workshopRecord.id,
                 name = workshopRecord.name,
+                workshopType = WorkshopType.valueOf(workshopRecord.workshopType),
                 workshopstatus = status,
                 opensAt = opensAt,
                 registerLimit = workshopRecord.registerLimit,

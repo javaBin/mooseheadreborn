@@ -1,6 +1,6 @@
-import {render,screen} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import WorkshopDisplay from "./WorkshopDisplay";
-import {WorkshopStatus, WorkshopType} from "../ServerTypes";
+import {WorkshopServerType, WorkshopStatus, WorkshopType} from "../ServerTypes";
 
 test('It should render workshop data',() => {
     const workshop:WorkshopType = {
@@ -10,6 +10,7 @@ test('It should render workshop data',() => {
         opensAt: "July 22 at 09:34",
         registerLimit: 1,
         workshopStatusText: "Dummy status",
+        workshopType: WorkshopServerType.JZ
     }
     render(<WorkshopDisplay workshop={workshop} displayLink={true}/>);
 
