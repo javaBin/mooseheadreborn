@@ -35,7 +35,7 @@ data class WorkshopDto(
 
         fun toStatus(workshopRecord: WorkshopRecord,now: Instant,numSpotsReserved: Int?):WorkshopStatus = when {
             workshopRecord.registrationOpen.toInstant().isAfter(now) -> WorkshopStatus.NOT_OPEN
-            numSpotsReserved != null && numSpotsReserved >= workshopRecord.registerLimit -> WorkshopStatus.FULL
+            numSpotsReserved != null && numSpotsReserved >= workshopRecord.capacity -> WorkshopStatus.FULL
             else -> WorkshopStatus.OPEN
         }
     }
