@@ -63,17 +63,19 @@ class AdminService(
                         registeredAt = registration.registeredAt.toString()
                     )
                 }.sortedWith(compareBy({ if (it.status == RegistrationStatus.CANCELLED) 1 else 0},{it.registeredAt}),)
-            val seatsTaken:Int = registrationThisWorkshopList.filter { it.status != RegistrationStatus.CANCELLED.name }.sumOf { it.participantCount }
+            val seatsTaken:Int = registrationThisWorkshopList.filter { it.status == RegistrationStatus.REGISTERED.name }.sumOf { it.participantCount }
+            val waitingSize:Int = registrationThisWorkshopList.filter { it.status == RegistrationStatus.WAITING.name }.sumOf { it.participantCount }
             val adminWorkshopDto = AdminWorkshopDto(
                 id = workshopRecord.id,
                 name = workshopRecord.name,
                 workshopType = WorkshopType.valueOf(workshopRecord.workshopType),
-                workshopstatus = WorkshopDto.toStatus(workshopRecord,now),
+                workshopstatus = WorkshopDto.toStatus(workshopRecord,now,seatsTaken+waitingSize),
                 opensAt = workshopRecord.registrationOpen.toString(),
                 registerLimit = workshopRecord.registerLimit,
                 capacity = workshopRecord.capacity,
                 registrationList = registratonList,
-                seatsTaken = seatsTaken
+                seatsTaken = seatsTaken,
+                waitingSize = waitingSize,
 
             )
             workshopDtoList.add(adminWorkshopDto)

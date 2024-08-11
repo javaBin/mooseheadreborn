@@ -16,12 +16,14 @@ class WorkshopServiceTest {
     private val timeService:MyTimeService = mockk(relaxed = false)
     private val readProgramService:ReadProgramService = mockk(relaxed = false)
     private val adminService:AdminService = mockk(relaxed = false)
+    private val registrationRepository:RegistrationRepository = mockk(relaxed = false)
 
     private val workshopService: WorkshopService = WorkshopService(
         workshopRepository = workshopRepository,
         timeService = timeService,
         adminService = adminService,
         readProgramService = readProgramService,
+        registationRepository = registrationRepository,
     )
 
     @Test
@@ -39,6 +41,8 @@ class WorkshopServiceTest {
         )
         every { workshopRepository.allWorkshops()}.returns(listOf(wr))
         every { timeService.currentTime() }.returns(Instant.now())
+
+        every { registrationRepository.totalNumberOfRegistration() }.returns(emptyMap( ))
 
         val result = workshopService.allWorkshops()
 

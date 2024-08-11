@@ -11,6 +11,7 @@ class AdminWorkshopDto(
     val registerLimit:Int,
     val capacity:Int,
     val seatsTaken:Int,
+    val waitingSize:Int,
     val registrationList:List<AdminWorkshopRegistration>
 ) {
 }

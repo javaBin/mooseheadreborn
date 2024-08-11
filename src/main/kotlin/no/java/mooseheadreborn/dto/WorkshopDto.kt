@@ -18,9 +18,9 @@ data class WorkshopDto(
 
     companion object {
         private val formatter = DateTimeFormatter.ofPattern("LLLL dd' at 'HH:mm")
-        fun toDto(workshopRecord: WorkshopRecord, now: Instant):WorkshopDto {
+        fun toDto(workshopRecord: WorkshopRecord, now: Instant,numSpotsReserved:Int?):WorkshopDto {
 
-            val status:WorkshopStatus = toStatus(workshopRecord,now)
+            val status:WorkshopStatus = toStatus(workshopRecord,now,numSpotsReserved)
             val opensAt = formatter.format(workshopRecord.registrationOpen)
             return WorkshopDto(
                 id = workshopRecord.id,
@@ -33,9 +33,10 @@ data class WorkshopDto(
             )
         }
 
-        fun toStatus(workshopRecord: WorkshopRecord,now: Instant):WorkshopStatus = when {
-            workshopRecord.registrationOpen.toInstant().isBefore(now) -> WorkshopStatus.OPEN
-            else -> WorkshopStatus.NOT_OPEN
+        fun toStatus(workshopRecord: WorkshopRecord,now: Instant,numSpotsReserved: Int?):WorkshopStatus = when {
+            workshopRecord.registrationOpen.toInstant().isAfter(now) -> WorkshopStatus.NOT_OPEN
+            numSpotsReserved != null && numSpotsReserved >= workshopRecord.registerLimit -> WorkshopStatus.FULL
+            else -> WorkshopStatus.OPEN
         }
     }
 }

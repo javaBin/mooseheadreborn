@@ -6,6 +6,7 @@ import no.java.mooseheadreborn.jooq.public_.tables.records.RegistrationRecord
 import org.jooq.*
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
+import org.jooq.impl.DSL.sum
 
 interface RegistrationRepository {
     fun addRegistration(rr: RegistrationRecord)
@@ -15,6 +16,8 @@ interface RegistrationRepository {
     fun registrationForId(registrationId: String): RegistrationRecord?
     fun registationListByParticipant(participantId: String): List<RegistrationRecord>
     fun allRegistrations(): List<RegistrationRecord>
+    fun totalNumberOfRegistration():Map<String,Int>
+    fun totalRegistrationsOnWorkshop(workshopId: String):Int
 
 }
 
@@ -64,5 +67,31 @@ class RegistrationRepositoryImpl(
 
     override fun allRegistrations():List<RegistrationRecord> {
         return dslContext.selectFrom(Tables.REGISTRATION).fetch()
+    }
+
+    override fun totalNumberOfRegistration(): Map<String,Int> {
+        val result = dslContext
+            .select(sum(Tables.REGISTRATION.PARTICIPANT_COUNT).`as`("registerCount"),Tables.REGISTRATION.WORKSHOP)
+            .from(Tables.REGISTRATION)
+            .where(Tables.REGISTRATION.STATUS.ne(RegistrationStatus.CANCELLED.name))
+            .groupBy(Tables.REGISTRATION.WORKSHOP)
+            .fetch()
+        val resultMap:MutableMap<String,Int> = mutableMapOf()
+
+        for (resultRow in result) {
+            resultMap[resultRow.get(Tables.REGISTRATION.WORKSHOP)] = resultRow.get("registerCount",Int::class.java)
+        }
+
+        return resultMap
+    }
+
+    override fun totalRegistrationsOnWorkshop(workshopId: String): Int {
+        val resultRow = dslContext
+            .select(sum(Tables.REGISTRATION.PARTICIPANT_COUNT).`as`("registerCount"))
+            .from(Tables.REGISTRATION)
+            .where(Tables.REGISTRATION.WORKSHOP.eq(workshopId),Tables.REGISTRATION.STATUS.ne(RegistrationStatus.CANCELLED.name))
+            .fetchOne()
+        return resultRow?.get("registerCount",Int::class.java)?:0
+
     }
 }

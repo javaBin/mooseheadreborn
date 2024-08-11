@@ -173,7 +173,8 @@ class RegistrationService(
 
     fun participantInfoForWorkshop(workshopId: String,accessToken: String?):Either<UserWorkshopRegistrationDto,String> {
         val workshopRecord = workshopRepository.workshopFromId(workshopId)?:return Either.Right("Unknown workshopid")
-        val workshopDto:WorkshopDto = WorkshopDto.toDto(workshopRecord, Instant.now())
+        val registrationCount = registrationRepository.totalRegistrationsOnWorkshop(workshopId)
+        val workshopDto:WorkshopDto = WorkshopDto.toDto(workshopRecord, Instant.now(),registrationCount)
         val userRegistration = readUserRegistration(workshopId,accessToken)
         return userRegistration.fold(
             left = { (registrationStatus: RegistrationStatus, registrationId: String?,numRegistrations:Int?) ->
@@ -198,7 +199,8 @@ class RegistrationService(
             registrationRecordList.firstOrNull { it.workshop == rrFromId.workshop && it.cancelledAt == null }?:rrFromId
         } else rrFromId
         val workshopRecord:WorkshopRecord = workshopRepository.workshopFromId(registrationRecord.workshop)?:return Either.Right("Unknown workshopid")
-        val workshopDto:WorkshopDto = WorkshopDto.toDto(workshopRecord, Instant.now())
+        val registrationCount = registrationRepository.totalRegistrationsOnWorkshop(workshopRecord.id)
+        val workshopDto:WorkshopDto = WorkshopDto.toDto(workshopRecord, Instant.now(),registrationCount)
         val registrationStatus = RegistrationStatus.valueOf(registrationRecord.status)
         val userWorkshopRegistrationDto = UserWorkshopRegistrationDto(
             workshop = workshopDto,

@@ -31,4 +31,15 @@ class RegistrationRepositoryMock:RegistrationRepository {
     }
 
     override fun allRegistrations(): List<RegistrationRecord> = store
+
+    override fun totalNumberOfRegistration(): Map<String, Int> {
+        return store
+            .filter { it.status != RegistrationStatus.CANCELLED.name }
+            .groupBy { it.workshop }
+            .mapValues { it.value.size }
+    }
+
+    override fun totalRegistrationsOnWorkshop(workshopId: String): Int {
+        return store.count { it.workshop == workshopId  && it.status != RegistrationStatus.CANCELLED.name}
+    }
 }

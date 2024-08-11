@@ -16,19 +16,22 @@ class WorkshopService(
     private val timeService: MyTimeService,
     private val adminService: AdminService,
     private val readProgramService: ReadProgramService,
+    private val registationRepository: RegistrationRepository,
 ) {
     fun allWorkshops(): List<WorkshopDto> {
         val workshopRecords = workshopRepository.allWorkshops()
         val now:Instant = timeService.currentTime()
-        val workshopDtos = workshopRecords.map { WorkshopDto.toDto(it,now) }
+        val registraionCount:Map<String,Int> = registationRepository.totalNumberOfRegistration()
+        val workshopDtos = workshopRecords.map { WorkshopDto.toDto(it,now,registraionCount[it.id]) }
         return workshopDtos
     }
 
     fun workshopById(workshopId:String): WorkshopDto? {
         val workshopRecord = workshopRepository.workshopFromId(workshopId)?:return null
+        val registraionCount = registationRepository.totalRegistrationsOnWorkshop(workshopId)
 
         val now:Instant = timeService.currentTime()
-        return WorkshopDto.toDto(workshopRecord,now)
+        return WorkshopDto.toDto(workshopRecord,now,registraionCount)
     }
 
 
