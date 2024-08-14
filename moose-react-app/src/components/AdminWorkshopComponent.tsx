@@ -23,6 +23,7 @@ const AdminWorkshopComponent = ({workshop}:AdminWorksopProps) => {
             <p>Register Limit: {workshop.registerLimit}</p>
             <p>Capacity: {workshop.capacity}</p>
             <p>Seats Taken: {workshop.seatsTaken}</p>
+            <p>Waiting: {workshop.waitingSize}</p>
             <h3>Participants&nbsp;
                 {showParticipants && <Button variant={"dark"} size={"sm"} onClick={() => setShowParticipants(false)}>Hide</Button>}
                 {!showParticipants && <Button variant={"info"} size={"sm"} onClick={() => setShowParticipants(true)}>Show</Button>}

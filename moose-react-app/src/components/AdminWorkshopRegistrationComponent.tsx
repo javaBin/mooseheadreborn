@@ -12,6 +12,7 @@ const AdminWorkshopRegistrationComponent = ({registration,participantNumber}:Adm
         <p>Email: {registration.email}</p>
         <p>Spots reserved: {registration.numSpots}</p>
         <p>Registered at: {registration.registeredAt}</p>
+        <p><a href={"/registration/" + registration.id}>Cancel registration</a></p>
     </div>);
 }
 

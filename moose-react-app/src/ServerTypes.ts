@@ -100,6 +100,7 @@ export interface AdminWorkshopType {
     registerLimit: number;
     capacity: number;
     seatsTaken: number;
+    waitingSize:number;
     registrationList: AdminWorkshopRegistrationType[];
 }
 
