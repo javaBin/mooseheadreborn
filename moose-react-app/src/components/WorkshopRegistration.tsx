@@ -1,7 +1,7 @@
 import {AddRegistrationInput, RegistrationStatus, WorkshopInfoFromServer, WorkshopStatus} from "../ServerTypes";
 import {Alert, Button, Form} from "react-bootstrap";
 import addRegistrationToServer from "../hooks/addRegistrationToServer";
-import {ChangeEvent, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import WorkshopCancellation from "./WorkshopCancellation";
 
 
@@ -72,7 +72,7 @@ const WorkshopRegistration : React.FC<WorkshopRegistrationProps> = ({workshopInf
     return (<div>
         {(workshopInfoFromServer.workshop.workshopstatus === WorkshopStatus.NOT_OPEN) && <p>Workshop not open for registration yet. Opens {workshopInfoFromServer.workshop.opensAt}.</p>}
         {(workshopInfoFromServer.workshop.workshopstatus === WorkshopStatus.CLOSED) && <p>Workshop not open for registration anymore.</p>}
-        {(!showConfirmCancelMessage && workshopInfoFromServer.workshop.workshopstatus === WorkshopStatus.OPEN && (registrationStatus === RegistrationStatus.NOT_REGISTERED || registrationStatus == RegistrationStatus.CANCELLED)) &&
+        {(!showConfirmCancelMessage && (workshopInfoFromServer.workshop.workshopstatus === WorkshopStatus.OPEN || workshopInfoFromServer.workshop.workshopstatus === WorkshopStatus.FULL) && (registrationStatus === RegistrationStatus.NOT_REGISTERED || registrationStatus == RegistrationStatus.CANCELLED)) &&
             <Form>
                 {doSelectParticipants && <Form.Group>
                     <Form.Label>Number of participants</Form.Label>
