@@ -148,6 +148,14 @@ class RestController(
         )
     }
 
+    @PostMapping("/api/admin/changeCapacity")
+    fun changeCapacity(@RequestBody changeCapacityDto: ChangeCapacityDto):ResponseEntity<AdminWorkshopDto> {
+        return adminService.changeCapacity(changeCapacityDto).fold(
+            left = { adminWorkshopDto:AdminWorkshopDto -> ResponseEntity.ok(adminWorkshopDto) },
+            right = { errormessage: String -> throw BadRequestException(errormessage) }
+        )
+    }
+
 
     @ExceptionHandler(BadRequestException::class)
     fun handleBadRequest(ex: BadRequestException): ResponseEntity<String> =

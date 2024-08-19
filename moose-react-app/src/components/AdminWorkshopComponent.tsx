@@ -1,16 +1,22 @@
-import {AdminWorkshopType} from "../ServerTypes";
+import {AdminWorkshopType, ChangeCapacityType, UserLogin} from "../ServerTypes";
 import AdminWorkshopRegistrationComponent from "./AdminWorkshopRegistrationComponent";
-import {Alert, Button, Col, Modal} from "react-bootstrap";
-import {useState} from "react";
+import {Alert, Button, Col, Form, Modal, Row} from "react-bootstrap";
+import {FormEvent, useRef, useState} from "react";
+import changeCapacityForWorkshop from "../hooks/changeCapacityForWorkshop";
 
 interface AdminWorksopProps {
-    workshop:AdminWorkshopType
+    workshop:AdminWorkshopType,
+    userLogin:UserLogin
 }
 
-const AdminWorkshopComponent = ({workshop}:AdminWorksopProps) => {
+const AdminWorkshopComponent = ({workshop : inputWorkshop,userLogin}:AdminWorksopProps) => {
     const [showDetails,setShowDetails] = useState<boolean>(true);
     const [showParticipants,setShowParticipants] = useState<boolean>(true);
     const [showCopied,setShowCopied] = useState<boolean>(false);
+    const [showCapacityUpdated,setShowCapacityUpdated] = useState<boolean>(false);
+    const updatedCapacityRef = useRef<HTMLInputElement>(null);
+    const [capacityErrormessage,setCapacityErrormessage] = useState<string|null>(null);
+    const [workshop,setWorkshop] = useState<AdminWorkshopType>(inputWorkshop);
 
     const onClickCopy = () => {
         const emailText:string = workshop.registrationList.map((p) => p.email).join(",");
@@ -18,6 +24,32 @@ const AdminWorkshopComponent = ({workshop}:AdminWorksopProps) => {
             setShowCopied(true);
         })
     };
+
+    const handleUpdateCapacity = (event:FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const valnum:number = Number(updatedCapacityRef.current?.value || "");
+        if (isNaN(valnum)) {
+            setCapacityErrormessage("Need to enter a capacity");
+            return
+        }
+        if (!userLogin.accessToken) {
+            setCapacityErrormessage("Not logged in");
+            return;
+        }
+        const changeCapacityInput:ChangeCapacityType = {
+              accessToken: userLogin.accessToken,
+            workshopId: workshop.id,
+            capacity: valnum
+        };
+        setCapacityErrormessage(null);
+
+        changeCapacityForWorkshop(changeCapacityInput).then((updatedWorkshop:AdminWorkshopType) => {
+            setWorkshop(updatedWorkshop);
+            setShowCapacityUpdated(true);
+        }).catch(errorFromServer => setCapacityErrormessage(errorFromServer));
+
+
+    }
 
     return (<div>
         <h2>{workshop.name}&nbsp;
@@ -30,6 +62,22 @@ const AdminWorkshopComponent = ({workshop}:AdminWorksopProps) => {
             <p>Opens At: {workshop.opensAt}</p>
             <p>Register Limit: {workshop.registerLimit}</p>
             <p>Capacity: {workshop.capacity}</p>
+            <Form onSubmit={handleUpdateCapacity}>
+                <Row className="align-items-center">
+                    <Col xs="auto">
+                        <Form.Group controlId="formInlineEmail">
+                            <Form.Control type="number" placeholder="Updated capacity" ref={updatedCapacityRef}/>
+                        </Form.Group>
+                    </Col>
+                    <Col xs="auto">
+                        <Button type="submit">Update capacity</Button>
+                    </Col>
+                </Row>
+            </Form>
+            {capacityErrormessage && <Alert variant={"danger"}>{capacityErrormessage}</Alert>}
+            {showCapacityUpdated && <Col md={2}>
+                <Alert variant={"light"} dismissible={true} onClose={() => setShowCapacityUpdated(false)}>Capacity was updated</Alert>
+            </Col>}
             <p>Seats Taken: {workshop.seatsTaken}</p>
             <p>Waiting: {workshop.waitingSize}</p>
             <h3>Participants&nbsp;

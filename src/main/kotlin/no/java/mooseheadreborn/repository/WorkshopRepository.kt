@@ -9,7 +9,7 @@ interface WorkshopRepository {
     fun allWorkshops(): List<WorkshopRecord>
     fun addWorkshop(workshopRecord: WorkshopRecord)
     fun workshopFromId(workshopId: String): WorkshopRecord?
-
+    fun updateCapacity(workshopId: String,capacity: Int)
 }
 
 @Repository
@@ -30,6 +30,13 @@ class WorkshopRepositoryImpl(
             .fetchOne()
     }
 
+    override fun updateCapacity(workshopId: String, capacity: Int) {
+        dslContext
+            .update(Tables.WORKSHOP)
+            .set(Tables.WORKSHOP.CAPACITY,capacity)
+            .where(Tables.WORKSHOP.ID.eq(workshopId))
+            .execute()
+    }
 
 
 }

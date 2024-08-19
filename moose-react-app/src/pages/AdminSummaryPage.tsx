@@ -25,7 +25,7 @@ const AdminSummaryPage = () => {
     },[userLogin])
     return (<Container>
         <h1>Admin summary</h1>
-        {workshopList.map((workshop) => <AdminWorkshopComponent workshop={workshop} key={workshop.id}/>)}
+        {userLogin && workshopList.map((workshop) => <AdminWorkshopComponent workshop={workshop} userLogin={userLogin} key={workshop.id}/>)}
         {errormessage && <Alert variant={"danger"}>{errormessage}</Alert> }
     </Container>)
 };

@@ -77,24 +77,15 @@ class RegistrationService(
 
     }
 
-    fun cancelRegistration(registrationId:String,accessToken: String?):Either<CancelRegistrationResultDto,String> {
-        val registation =  registrationRepository.registrationForId(registrationId)
-            ?:return Either.Right("Registration not found")
-        if (registation.cancelledAt != null) {
-            return Either.Right("Registration already cancelled")
-        }
-        val workshop:WorkshopRecord = workshopRepository.workshopFromId(registation.workshop)
-            ?: return Either.Right("Workshop not found ${registation.workshop}")
-        registrationRepository.cancelRegistration(registrationId)
-
-        val registrationList = registrationRepository.registrationListForWorkshop(registation.workshop)
+    fun insertFromWaitingList(workshop:WorkshopRecord) {
+        val registrationList = registrationRepository.registrationListForWorkshop(workshop.id)
             .filter { it.cancelledAt == null }
             .sortedBy { it.registeredAt }
 
         var numRegistered = 0
         for (registration in registrationList) {
             numRegistered+=registration.participantCount
-            if (numRegistered > workshop.registerLimit) {
+            if (numRegistered > workshop.capacity) {
                 break
             }
             if (registration.status == RegistrationStatus.WAITING.name) {
@@ -113,6 +104,21 @@ class RegistrationService(
                 }
             }
         }
+    }
+
+    fun cancelRegistration(registrationId:String,accessToken: String?):Either<CancelRegistrationResultDto,String> {
+        val registation =  registrationRepository.registrationForId(registrationId)
+            ?:return Either.Right("Registration not found")
+        if (registation.cancelledAt != null) {
+            return Either.Right("Registration already cancelled")
+        }
+        val workshop:WorkshopRecord = workshopRepository.workshopFromId(registation.workshop)
+            ?: return Either.Right("Workshop not found ${registation.workshop}")
+        registrationRepository.cancelRegistration(registrationId)
+
+        insertFromWaitingList(workshop)
+
+
         val particiantRecord:ParticiantRecord? = accessToken?.let { participantRepository.participantByAccessKey(it) }
         val registrationStatus:RegistrationStatus = if (particiantRecord != null) RegistrationStatus.NOT_REGISTERED else RegistrationStatus.NOT_LOGGED_IN
         return Either.Left(CancelRegistrationResultDto(registrationStatus))

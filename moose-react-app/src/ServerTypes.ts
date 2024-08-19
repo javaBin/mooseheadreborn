@@ -111,3 +111,9 @@ export interface AdminWorkshopSummaryType {
 export interface AdminLoginInput {
     password:string;
 }
+
+export interface ChangeCapacityType {
+    accessToken:string;
+    workshopId:string;
+    capacity:number;
+}
