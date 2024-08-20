@@ -143,7 +143,7 @@ test("Should copy email",async () => {
 
 });
 
-test("Admin summary renders with no participant",() => {
+test("Admin summary renders with no participant",async () => {
     const adminWorkshop:AdminWorkshopType = {
         id: "workshopid",
         name: "My workshop",
@@ -157,7 +157,10 @@ test("Admin summary renders with no participant",() => {
         registrationList: []
     }
     render(<AdminWorkshopComponent workshop={adminWorkshop} userLogin={userLogin}/>);
-    const noParticipants = screen.getByText("No registrations yet");
+    const showPartButton = screen.getByText("Show");
+    expect(showPartButton).toBeInTheDocument();
+    user.click(showPartButton);
+    const noParticipants = await screen.findByText("No registrations yet");
     expect(noParticipants).toBeInTheDocument();
 });
 
@@ -194,7 +197,12 @@ test("Admin summary renders participant",async () => {
         ]
     };
     render(<AdminWorkshopComponent workshop={adminWorkshop} userLogin={userLogin}/>);
-    const wstext = screen.getByText("2. Part two");
+
+    const showPartButton = screen.getByText("Show");
+    expect(showPartButton).toBeInTheDocument();
+    user.click(showPartButton);
+
+    const wstext = await screen.findByText("2. Part two");
     expect(wstext).toBeInTheDocument();
 
     const hideButtonList = screen.getAllByText("Hide");

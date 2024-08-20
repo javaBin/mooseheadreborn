@@ -11,7 +11,7 @@ interface AdminWorksopProps {
 
 const AdminWorkshopComponent = ({workshop : inputWorkshop,userLogin}:AdminWorksopProps) => {
     const [showDetails,setShowDetails] = useState<boolean>(true);
-    const [showParticipants,setShowParticipants] = useState<boolean>(true);
+    const [showParticipants,setShowParticipants] = useState<boolean>(false);
     const [showCopied,setShowCopied] = useState<boolean>(false);
     const [showCapacityUpdated,setShowCapacityUpdated] = useState<boolean>(false);
     const updatedCapacityRef = useRef<HTMLInputElement>(null);
