@@ -3,6 +3,9 @@ package no.java.mooseheadreborn.repository
 import no.java.mooseheadreborn.domain.*
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.*
+import java.sql.Timestamp
+import java.time.*
+import java.time.format.*
 
 class RegistrationCollision(
     val name:String,
@@ -23,6 +26,16 @@ class RegistrationCollision(
 class ReportRepository(
     private val jdbcTemplate:JdbcTemplate
 ) {
+    companion object {
+        private val zoneId = ZoneId.of("Europe/Oslo")
+        private val dateFormat = DateTimeFormatter.ofPattern("dd/MM HH:mm")
+
+        private fun timestampAsLocalText(timestamp: Timestamp):String {
+            return timestamp.toInstant().atZone(zoneId).toLocalDateTime().format(dateFormat)
+        }
+    }
+
+
     fun loadRegistrationCollisionList():List<RegistrationCollision> {
         val res:List<RegistrationCollision> = jdbcTemplate.query("""   
             SELECT par.name, par.email, wa.name as aname, wb.name as bname, ra.status as astatus, rb.status as bstatus, wa.starttime as astart,
@@ -44,10 +57,10 @@ class ReportRepository(
                     workshopBName = rs.getString("bname"),
                     statusA = RegistrationStatus.valueOf(rs.getString("astatus")),
                     statusB = RegistrationStatus.valueOf(rs.getString("bstatus")),
-                    astart = rs.getTimestamp("astart").toInstant().toString(),
-                    aend = rs.getTimestamp("aend").toInstant().toString(),
-                    bstart = rs.getTimestamp("bstart").toInstant().toString(),
-                    bend = rs.getTimestamp("bend").toInstant().toString(),
+                    astart = timestampAsLocalText(rs.getTimestamp("astart")),
+                    aend = timestampAsLocalText(rs.getTimestamp("aend")),
+                    bstart = timestampAsLocalText(rs.getTimestamp("bstart")),
+                    bend = timestampAsLocalText(rs.getTimestamp("bend")),
                     registrationIdA = rs.getString("regaid"),
                     registrationIdB = rs.getString("regbid")
                 )
