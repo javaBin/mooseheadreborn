@@ -119,6 +119,15 @@ class RegistrationService(
             ?: return Either.Right("Workshop not found ${registation.workshop}")
         registrationRepository.cancelRegistration(registrationId)
 
+
+        val particiantRecordFromWorkshop:ParticiantRecord? = participantRepository.participantById(registation.participant)
+        if (particiantRecordFromWorkshop != null) {
+            sendMailService.sendEmail(particiantRecordFromWorkshop.email,EmailTemplate.CANCEL_CONFIRMATION, mapOf(
+                EmailVariable.WORKSHOP_NAME to workshop.name,
+            ))
+
+        }
+
         insertFromWaitingList(workshop)
 
 

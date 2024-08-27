@@ -6,6 +6,7 @@ enum class EmailTemplate(val templatePath:String,val subject:String) {
     REGISTER_CONFIRMATION("templates/registrationConfirmation.html","Workshop confirmation"),
     REGISTER_CONFIRMATION_WAITING("templates/waitingConfirmation.html","Workshop confirmation"),
     PARTICIPANT_CONFIRMATION("templates/confirmEmail.html","Confirm email"),
+    CANCEL_CONFIRMATION("templates/cancelConfirmation.html","Workshop registration cancelled"),
 }
 
 enum class EmailVariable {
