@@ -78,6 +78,9 @@ class RegistrationService(
     }
 
     fun insertFromWaitingList(workshop:WorkshopRecord) {
+        if (workshop.changesLocked != null && timeService.currentTime().isAfter(workshop.changesLocked.toInstant())) {
+            return
+        }
         val registrationList = registrationRepository.registrationListForWorkshop(workshop.id)
             .filter { it.cancelledAt == null }
             .sortedBy { it.registeredAt }
