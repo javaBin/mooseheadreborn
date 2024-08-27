@@ -156,6 +156,14 @@ class RestController(
         )
     }
 
+    @PostMapping("/api/admin/collisionSummary")
+    fun readCollisionSummary(@RequestBody accesssTokenDto: AccesssTokenDto):ResponseEntity<CollisionSummaryDto> {
+        return adminService.readCollisionSummary(accesssTokenDto.accessToken).fold(
+            left = {collisionSummaryDto:CollisionSummaryDto -> ResponseEntity.ok(collisionSummaryDto) },
+            right = { errormessage: String -> throw BadRequestException(errormessage) }
+        )
+    }
+
 
     @ExceptionHandler(BadRequestException::class)
     fun handleBadRequest(ex: BadRequestException): ResponseEntity<String> =

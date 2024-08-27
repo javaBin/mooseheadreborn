@@ -18,6 +18,7 @@ class AdminService(
     private val registrationRepository: RegistrationRepository,
     private val participantRepository: ParticipantRepository,
     private val registrationService: RegistrationService,
+    private val reportRepository: ReportRepository,
 ) {
     fun createAccess(password:String):Either<UserDto,String> {
         if (Config.getConfigValue(ConfigVariable.ADMIN_PASSWORD) != password) {
@@ -120,5 +121,13 @@ class AdminService(
 
         )
         return adminWorkshopDto
+    }
+
+    fun readCollisionSummary(accessKey:String):Either<CollisionSummaryDto,String> {
+        if (!keyIsValid(accessKey)) {
+            return Either.Right("No access")
+        }
+        val registrationCollisionList = reportRepository.loadRegistrationCollisionList()
+        return Either.Left(CollisionSummaryDto(registrationCollisionList))
     }
 }

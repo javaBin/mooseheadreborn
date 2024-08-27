@@ -16,6 +16,7 @@ import AdminSummaryPage from "./pages/AdminSummaryPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import {Navbar} from "react-bootstrap";
 import PrivacyPage from "./pages/PrivacyPage";
+import CollisionSummaryPage from "./pages/CollisionSummaryPage";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
                     <Route path="/registration/:registrationId" element={<RegistrationViewPage/>} />
                     <Route path="/admin" element={<AdminSummaryPage/>} />
                     <Route path="/adminlogin" element={<AdminLoginPage/>} />
+                    <Route path="/collisionSummary" element={<CollisionSummaryPage/>} />
                     <Route path="/privacy" element={<PrivacyPage/>} />
                 </Routes>
            </BrowserRouter>

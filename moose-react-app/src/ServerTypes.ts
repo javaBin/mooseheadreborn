@@ -117,3 +117,22 @@ export interface ChangeCapacityType {
     workshopId:string;
     capacity:number;
 }
+
+export interface RegistrationCollisionType {
+    name:string;
+    email:string;
+    workshopAName:string;
+    workshopBName:string;
+    statusA:RegistrationStatus;
+    statusB:RegistrationStatus;
+    astart:string;
+    aend:string;
+    bstart:string;
+    bend:string;
+    registrationIdA:string;
+    registrationIdB:string;
+}
+
+export interface CollisionSummaryType {
+    registrationCollisionList: RegistrationCollisionType[]
+}
