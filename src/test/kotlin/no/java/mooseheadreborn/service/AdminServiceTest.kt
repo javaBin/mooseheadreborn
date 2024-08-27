@@ -33,7 +33,8 @@ class AdminServiceTest {
         workshopRepository = workshopRepositoryMock,
         registrationRepository = registrationRepositoryMock,
         participantRepository = participantRepositoryMock,
-        registrationService = registrationService
+        registrationService = registrationService,
+        reportRepository = mockk(relaxed = false)
     )
 
 
