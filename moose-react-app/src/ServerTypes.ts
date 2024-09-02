@@ -131,8 +131,69 @@ export interface RegistrationCollisionType {
     bend:string;
     registrationIdA:string;
     registrationIdB:string;
+    participantId:string;
 }
 
 export interface CollisionSummaryType {
     registrationCollisionList: RegistrationCollisionType[]
+}
+
+export interface RegistrationInfoType {
+    workshopName:string;
+    registrationStatus:RegistrationStatus;
+    registrationStatusText:string;
+    startTime:string|null;
+    endTime:string|null;
+}
+
+export interface ParticipantRegistrationType {
+    participantName:string,
+    registrationInfoList:RegistrationInfoType[]
+}
+
+export interface WorkshopEntryInfoType {
+    workshopid: string;
+    workshopName: string;
+    numRegistred: number;
+    numWaiting: number;
+}
+
+export interface WorkshopEntrySlotType {
+    entryName:string;
+    workshopList:WorkshopEntryInfoType[];
+}
+
+export interface AllWorkshopsType {
+    slotList:WorkshopEntrySlotType[];
+}
+
+export interface ViewEntriesInputType {
+    accessToken: string;
+    workshopId:string;
+}
+
+export interface WorkshopEntryRegistrationType {
+    registrationNumber:number;
+    registrationId: string;
+    participantName: string;
+    participantEmail:string;
+    partcipantId: string;
+    registrationStatus: RegistrationStatus;
+    isCheckedIn: boolean;
+}
+
+export interface EntryRegistrationForWorkshopType {
+    entryList:WorkshopEntryRegistrationType[];
+    numberCheckedIn:number;
+}
+
+export interface UpdateCheckinInputType {
+    accessToken: string;
+    registrationId: string;
+    setCheckinTo:boolean;
+}
+
+export interface ReadEntryRegistrationInputType {
+    accessToken:string;
+    workshopId:string;
 }

@@ -17,6 +17,8 @@ import AdminLoginPage from "./pages/AdminLoginPage";
 import {Navbar} from "react-bootstrap";
 import PrivacyPage from "./pages/PrivacyPage";
 import CollisionSummaryPage from "./pages/CollisionSummaryPage";
+import ParticipantViewPage from "./pages/ParticipantViewPage";
+import EntryRegistrationPage from "./pages/EntryRegistrationPage";
 
 function App() {
   return (
@@ -29,9 +31,11 @@ function App() {
                     <Route path="/workshop/:workshopId" element={<WorkshopRegistryPage/>} />
                     <Route path="/activate/:registerKey" element={<ActivateParticipantPage/>} />
                     <Route path="/registration/:registrationId" element={<RegistrationViewPage/>} />
+                    <Route path="/participant/:participantId" element={<ParticipantViewPage/>} />
                     <Route path="/admin" element={<AdminSummaryPage/>} />
                     <Route path="/adminlogin" element={<AdminLoginPage/>} />
                     <Route path="/collisionSummary" element={<CollisionSummaryPage/>} />
+                    <Route path="/entryRegistration" element={<EntryRegistrationPage/>}/>
                     <Route path="/privacy" element={<PrivacyPage/>} />
                 </Routes>
            </BrowserRouter>

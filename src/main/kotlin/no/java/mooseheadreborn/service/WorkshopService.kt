@@ -26,6 +26,8 @@ class WorkshopService(
         return workshopDtos
     }
 
+
+
     fun workshopById(workshopId:String): WorkshopDto? {
         val workshopRecord = workshopRepository.workshopFromId(workshopId)?:return null
         val registraionCount = registationRepository.totalRegistrationsOnWorkshop(workshopId)

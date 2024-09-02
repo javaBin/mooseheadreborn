@@ -14,6 +14,7 @@ enum class EmailVariable {
     CONFIRM_EMAIL_LINK,
     WORKSHOP_NAME,
     WORKSHOP_TIME_TEXT,
+    PARTICIPANT_REGISTER_LINK,
 }
 
 object EmailTextGenerator {
@@ -33,4 +34,5 @@ object EmailTextGenerator {
 
     fun emailConfirnmAddress(registerKey:String):String = "${Config.getConfigValue(ConfigVariable.SERVER_ADDRESS)}/activate/$registerKey"
     fun cancelLinkAddress(registrationId:String):String = "${Config.getConfigValue(ConfigVariable.SERVER_ADDRESS)}/registration/$registrationId"
+    fun participantSummmaryAddress(participantId:String):String = "${Config.getConfigValue(ConfigVariable.SERVER_ADDRESS)}/participant/$participantId"
 }

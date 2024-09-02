@@ -3,7 +3,7 @@ import {AppContext} from "../context/AppContext";
 import {RegistrationCollisionType, UserLogin} from "../ServerTypes";
 import {Alert, Container} from "react-bootstrap";
 import readCollisionSummary from "../hooks/readCollisionSummary";
-import CollisionSummaryComponent from "./CollisionSummaryComponent";
+import CollisionSummaryComponent from "../components/CollisionSummaryComponent";
 
 const CollisionSummaryPage = () => {
     const appContext = useContext(AppContext);

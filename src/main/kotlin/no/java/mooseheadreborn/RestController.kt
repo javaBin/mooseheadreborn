@@ -4,6 +4,7 @@ import no.java.mooseheadreborn.domain.*
 import no.java.mooseheadreborn.dto.*
 import no.java.mooseheadreborn.dto.admin.*
 import no.java.mooseheadreborn.dto.enduser.*
+import no.java.mooseheadreborn.dto.entryregistration.*
 import no.java.mooseheadreborn.dto.moresleep.*
 import no.java.mooseheadreborn.service.*
 import org.springframework.http.*
@@ -35,6 +36,17 @@ class RestController(
         val workshopDto = workshopService.workshopById(workshopId)
             ?: throw BadRequestException("Unknown workshop $workshopId")
         return ResponseEntity.ok(workshopDto)
+    }
+
+    @GetMapping("/api/participant/{participantId}")
+    fun participantSummary(@PathVariable participantId: String?): ResponseEntity<ParticipantRegistrationsDto> {
+        if (participantId == null) {
+            throw BadRequestException("ParticipantId cannot be null")
+        }
+        return registrationService.participantInfoForParticipantId(participantId).fold(
+            left = { participantRegistrationsDto: ParticipantRegistrationsDto -> ResponseEntity.ok(participantRegistrationsDto) },
+            right = { errormessage: String -> throw BadRequestException(errormessage) }
+        )
     }
 
     @GetMapping("/api/registration/{registrationId}")
@@ -148,6 +160,22 @@ class RestController(
         )
     }
 
+    @PostMapping("/api/entry/workshops")
+    fun workshopsForEntry(@RequestBody accesssTokenDto: AccesssTokenDto):ResponseEntity<AllWorkshopsDto> {
+        return adminService.allWorkshopsForEntryRegistration(accesssTokenDto.accessToken).fold(
+            left = { allWorkshopsDto: AllWorkshopsDto -> ResponseEntity.ok(allWorkshopsDto) },
+            right = { errormessage: String -> throw BadRequestException(errormessage) }
+        )
+    }
+
+    @PostMapping("/api/entry/workshopEntry")
+    fun entriesForWorkshop(@RequestBody viewEntriesInputDto: ViewEntriesInputDto):ResponseEntity<EntryRegistrationForWorkshopDto> {
+        return adminService.readReadEntryRegistrations(viewEntriesInputDto.accessToken,viewEntriesInputDto.workshopId).fold(
+            left = { entryRegistrationForWorkshopDto: EntryRegistrationForWorkshopDto -> ResponseEntity.ok(entryRegistrationForWorkshopDto) },
+            right = { errormessage: String -> throw BadRequestException(errormessage) }
+        )
+    }
+
     @PostMapping("/api/admin/changeCapacity")
     fun changeCapacity(@RequestBody changeCapacityDto: ChangeCapacityDto):ResponseEntity<AdminWorkshopDto> {
         return adminService.changeCapacity(changeCapacityDto).fold(
@@ -160,6 +188,22 @@ class RestController(
     fun readCollisionSummary(@RequestBody accesssTokenDto: AccesssTokenDto):ResponseEntity<CollisionSummaryDto> {
         return adminService.readCollisionSummary(accesssTokenDto.accessToken).fold(
             left = {collisionSummaryDto:CollisionSummaryDto -> ResponseEntity.ok(collisionSummaryDto) },
+            right = { errormessage: String -> throw BadRequestException(errormessage) }
+        )
+    }
+
+    @PostMapping("/api/admin/updateCheckin")
+    fun updateCheckin(@RequestBody updateCheckinInputDto: UpdateCheckinInputDto):ResponseEntity<EntryRegistrationForWorkshopDto> {
+        return adminService.updateCheckin(updateCheckinInputDto).fold(
+            left = { entryRegistrationForWorkshopDto -> ResponseEntity.ok(entryRegistrationForWorkshopDto) },
+            right = { errormessage: String -> throw BadRequestException(errormessage) }
+        )
+    }
+
+    @PostMapping("/api/admin/readCheckin")
+    fun readCheckin(@RequestBody readEntryRegistrationInputDto: ReadEntryRegistrationInputDto):ResponseEntity<EntryRegistrationForWorkshopDto> {
+        return adminService.readCheckingForWorkshop(readEntryRegistrationInputDto.accessToken,readEntryRegistrationInputDto.workshopId).fold(
+            left = { entryRegistrationForWorkshopDto -> ResponseEntity.ok(entryRegistrationForWorkshopDto) },
             right = { errormessage: String -> throw BadRequestException(errormessage) }
         )
     }

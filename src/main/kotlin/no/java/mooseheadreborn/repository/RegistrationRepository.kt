@@ -18,6 +18,7 @@ interface RegistrationRepository {
     fun allRegistrations(): List<RegistrationRecord>
     fun totalNumberOfRegistration():Map<String,Int>
     fun totalRegistrationsOnWorkshop(workshopId: String):Int
+    fun setCheckedInAt(registrationId: String, checkedInAt: OffsetDateTime?)
 
 }
 
@@ -93,5 +94,12 @@ class RegistrationRepositoryImpl(
             .fetchOne()
         return resultRow?.get("registerCount",Int::class.java)?:0
 
+    }
+
+    override fun setCheckedInAt(registrationId: String, checkedInAt: OffsetDateTime?) {
+        dslContext.update(Tables.REGISTRATION)
+            .set(Tables.REGISTRATION.CHECKED_IN_AT,checkedInAt)
+            .where(Tables.REGISTRATION.ID.eq(registrationId))
+            .execute()
     }
 }

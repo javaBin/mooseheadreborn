@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 import java.time.*
 import java.time.format.*
 import java.util.UUID
+import kotlin.math.*
 
 @Service
 class RegistrationService(
@@ -20,6 +21,8 @@ class RegistrationService(
     private val sendMailService:SendMailService,
 ) {
     private val formatter = DateTimeFormatter.ofPattern("LLLL dd' at 'HH:mm")
+    private val shortFormatter = DateTimeFormatter.ofPattern("MMM d 'at' HH:mm")
+    private val zoneId = ZoneId.of("Europe/Oslo")
 
     fun addRegistration(accessToken:String,workshopId:String,numParticipants:Int):Either<AddRegistrationResultDto,String> {
         if (numParticipants < 1) {
@@ -45,7 +48,8 @@ class RegistrationService(
             participant.id,
             numParticipants,
             OffsetDateTime.now(),
-            null
+            null,
+            null,
         )
         registrationRepository.addRegistration(rr)
 
@@ -57,7 +61,8 @@ class RegistrationService(
             variableMap = mapOf(
                     EmailVariable.CANCEL_LINK to EmailTextGenerator.cancelLinkAddress(rr.id),
                     EmailVariable.WORKSHOP_NAME to workshop.name,
-                    EmailVariable.WORKSHOP_TIME_TEXT to workshopStartText(workshop.starttime)
+                    EmailVariable.WORKSHOP_TIME_TEXT to workshopStartText(workshop.starttime),
+                    EmailVariable.PARTICIPANT_REGISTER_LINK to EmailTextGenerator.participantSummmaryAddress(participant.id)
                 )
         )
 
@@ -101,7 +106,8 @@ class RegistrationService(
                         variableMap = mapOf(
                             EmailVariable.CANCEL_LINK to EmailTextGenerator.cancelLinkAddress(registration.id),
                             EmailVariable.WORKSHOP_NAME to workshop.name,
-                            EmailVariable.WORKSHOP_TIME_TEXT to workshopStartText(workshop.starttime)
+                            EmailVariable.WORKSHOP_TIME_TEXT to workshopStartText(workshop.starttime),
+                            EmailVariable.PARTICIPANT_REGISTER_LINK to EmailTextGenerator.participantSummmaryAddress(participant.id),
                         )
                     )
                 }
@@ -124,6 +130,7 @@ class RegistrationService(
         if (particiantRecordFromWorkshop != null) {
             sendMailService.sendEmail(particiantRecordFromWorkshop.email,EmailTemplate.CANCEL_CONFIRMATION, mapOf(
                 EmailVariable.WORKSHOP_NAME to workshop.name,
+                EmailVariable.PARTICIPANT_REGISTER_LINK to EmailTextGenerator.participantSummmaryAddress(registation.participant),
             ))
 
         }
@@ -228,6 +235,44 @@ class RegistrationService(
             numRegistered = if (workshopRecord.registerLimit > 1) registrationRecord.participantCount else null
         )
         return Either.Left(userWorkshopRegistrationDto)
+    }
+
+    fun participantInfoForParticipantId(participantId:String):Either<ParticipantRegistrationsDto,String> {
+        val participantRecord: ParticiantRecord = participantRepository.participantById(participantId)?:return Either.Right("Unknown participantid")
+        val registrationList:List<RegistrationRecord> = registrationRepository.registationListByParticipant(participantId)
+
+        if (registrationList.isEmpty()) {
+            return Either.Left(ParticipantRegistrationsDto(participantRecord.name, emptyList()))
+        }
+
+        val workshopList:List<WorkshopRecord> = workshopRepository.allWorkshops()
+        val allGrouped:Map<String,List<RegistrationRecord>> = registrationList.groupBy { it.workshop }
+
+        val registrationInfoList:List<RegistrationInfoDto> = allGrouped.mapNotNull { entry ->
+            val rr:RegistrationRecord? = entry.value.maxByOrNull { it.registeredAt }
+            val wr:WorkshopRecord? = workshopList.firstOrNull { it.id == entry.key }
+            if (rr != null && wr != null) {
+                val registrationStatus = RegistrationStatus.valueOf(rr.status)
+                RegistrationInfoDto(
+                    workshopName = wr.name,
+                    registrationStatus = registrationStatus,
+                    registrationStatusText = registrationStatus.displayText,
+                    startTime = formatOffset(wr.starttime),
+                    endTime = formatOffset(wr.endtime),
+                )
+            } else {
+                null
+            }
+        }
+        return Either.Left(ParticipantRegistrationsDto(participantRecord.name, registrationInfoList))
+
+    }
+
+    private fun formatOffset(offsetDateTime: OffsetDateTime?):String? {
+        if (offsetDateTime == null) {
+            return null
+        }
+        return offsetDateTime.atZoneSameInstant(zoneId).toLocalDateTime().format(shortFormatter)
     }
 
 }
