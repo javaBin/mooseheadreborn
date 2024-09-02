@@ -42,4 +42,8 @@ class RegistrationRepositoryMock:RegistrationRepository {
     override fun totalRegistrationsOnWorkshop(workshopId: String): Int {
         return store.count { it.workshop == workshopId  && it.status != RegistrationStatus.CANCELLED.name}
     }
+
+    override fun setCheckedInAt(registrationId: String, checkedInAt: OffsetDateTime?) {
+        TODO("Not yet implemented")
+    }
 }
